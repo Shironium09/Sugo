@@ -1,0 +1,171 @@
+import { StyleSheet } from 'react-native';
+import { colors } from '../theme/colors';
+
+export const urgencyStyles = {
+  High: { backgroundColor: colors.urgencyHighBg },
+  Medium: { backgroundColor: colors.urgencyMediumBg },
+  Low: { backgroundColor: colors.urgencyLowBg },
+} as const;
+
+export const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+  },
+  mapPanel: {
+    flex: 0.4,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 12,
+    backgroundColor: colors.surfaceBlue,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.ink,
+  },
+  mapSurface: {
+    flex: 1,
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 16,
+    backgroundColor: colors.surfaceBlueDark,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mapLabel: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 14,
+    color: colors.ink,
+    textAlign: 'center',
+  },
+  listPanel: {
+    flex: 0.6,
+  },
+  listContent: {
+    paddingHorizontal: 20,
+    paddingTop: 0,
+    paddingBottom: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+    backgroundColor: colors.background,
+    paddingTop: 16,
+    paddingBottom: 8,
+    paddingHorizontal: 20,
+    marginHorizontal: -20,
+  },
+  title: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 24,
+    color: colors.ink,
+  },
+  emptyState: {
+    padding: 24,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: colors.ink,
+    backgroundColor: colors.surface,
+  },
+  emptyTitle: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 18,
+    marginBottom: 8,
+    color: colors.ink,
+  },
+  emptyBody: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 14,
+    color: colors.inkMuted,
+  },
+  card: {
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 14,
+    backgroundColor: colors.surface,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 6,
+  },
+  cardTitle: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 18,
+    flex: 1,
+    marginRight: 8,
+    color: colors.ink,
+  },
+  badges: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  urgencyPill: {
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 12,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  urgencyHigh: { backgroundColor: colors.urgencyHighBg },
+  urgencyMedium: { backgroundColor: colors.urgencyMediumBg },
+  urgencyLow: { backgroundColor: colors.urgencyLowBg },
+  urgencyText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 11,
+    color: colors.ink,
+  },
+  statusPill: {
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  statusText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 11,
+    color: colors.ink,
+  },
+  metaText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 14,
+    color: colors.inkMuted,
+    marginBottom: 6,
+  },
+  requesterText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 13,
+    color: colors.inkSubtle,
+    marginBottom: 6,
+  },
+  teaserText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 14,
+    color: colors.ink,
+    lineHeight: 22,
+    marginBottom: 8,
+  },
+  tagRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 2,
+  },
+  tagBadge: {
+    borderWidth: 1,
+    borderColor: colors.borderGhost,
+    borderRadius: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    backgroundColor: colors.surfaceBlue,
+  },
+  tagBadgeText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 11,
+    color: colors.inkTag,
+  },
+});

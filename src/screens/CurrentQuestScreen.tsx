@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { PixelButton } from "../components/PixelButton";
 import { RootStackParamList } from "../navigation/AppNavigator";
@@ -10,6 +10,7 @@ import {
   VerificationStatus,
 } from "../data/questStore";
 import { AppShell } from "../components/AppShell";
+import { styles } from "./CurrentQuestScreen.styles";
 
 type Props = NativeStackScreenProps<RootStackParamList, "CurrentQuest">;
 
@@ -27,6 +28,21 @@ const paymentLabel: Record<PaymentStatus, string> = {
 
 export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
   const { quests, claimQuest, markDone, confirmResolved } = useQuestStore();
+  const [loadingAction, setLoadingAction] = React.useState<string | null>(null);
+
+  const handleAction = async (
+    actionId: string,
+    actionFn: () => Promise<void>,
+  ) => {
+    try {
+      setLoadingAction(actionId);
+      await actionFn();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingAction(null);
+    }
+  };
   const quest = React.useMemo(
     () => quests.find((item: Quest) => item.id === route.params.questId),
     [quests, route.params.questId],
@@ -145,21 +161,37 @@ export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
               </View>
             ) : (
               <PixelButton
-                title="Claim Quest"
-                onPress={() => claimQuest(quest.id)}
+                title={
+                  loadingAction === "claim" ? "Claiming..." : "Claim Quest"
+                }
+                onPress={() =>
+                  handleAction("claim", () => claimQuest(quest.id))
+                }
+                disabled={loadingAction !== null}
               />
             ))}
 
           {quest.status === "in_progress" && !quest.fulfillerDone && (
-            <PixelButton title="Mark Done" onPress={() => markDone(quest.id)} />
+            <PixelButton
+              title={loadingAction === "markDone" ? "Updating..." : "Mark Done"}
+              onPress={() => handleAction("markDone", () => markDone(quest.id))}
+              disabled={loadingAction !== null}
+            />
           )}
 
           {quest.status === "in_progress" &&
             quest.fulfillerDone &&
             !quest.requesterConfirmed && (
               <PixelButton
-                title="Confirm Resolved"
-                onPress={() => confirmResolved(quest.id)}
+                title={
+                  loadingAction === "confirm"
+                    ? "Confirming..."
+                    : "Confirm Resolved"
+                }
+                onPress={() =>
+                  handleAction("confirm", () => confirmResolved(quest.id))
+                }
+                disabled={loadingAction !== null}
               />
             )}
 
@@ -173,115 +205,3 @@ export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
     </AppShell>
   );
 };
-
-const styles = StyleSheet.create({
-  content: {
-    padding: 20,
-  },
-  title: {
-    fontFamily: "PixelifySans-Regular",
-    fontSize: 24,
-    marginBottom: 8,
-    color: "#1B1F24",
-  },
-  subTitle: {
-    fontFamily: "IBMPlexMono-Regular",
-    fontSize: 14,
-    color: "#58616B",
-    marginBottom: 12,
-  },
-  bodyText: {
-    fontFamily: "IBMPlexMono-Regular",
-    fontSize: 15,
-    color: "#1B1F24",
-    lineHeight: 22,
-  },
-  section: {
-    marginTop: 18,
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#1B1F24",
-    backgroundColor: "#FFFFFF",
-  },
-  sectionTitle: {
-    fontFamily: "PixelifySans-Regular",
-    fontSize: 14,
-    marginBottom: 8,
-    color: "#1B1F24",
-  },
-  metaText: {
-    fontFamily: "IBMPlexMono-Regular",
-    fontSize: 14,
-    color: "#58616B",
-    marginBottom: 6,
-  },
-  stepRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  stepDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    borderWidth: 2,
-    borderColor: "#1B1F24",
-    marginRight: 8,
-  },
-  stepDotDone: {
-    backgroundColor: "#1B1F24",
-  },
-  stepDotPending: {
-    backgroundColor: "#FFFFFF",
-  },
-  stepText: {
-    fontFamily: "IBMPlexMono-Regular",
-    fontSize: 14,
-    color: "#1B1F24",
-  },
-  actions: {
-    marginTop: 18,
-    marginBottom: 8,
-  },
-  resolvedBadge: {
-    borderWidth: 2,
-    borderColor: "#1B1F24",
-    borderRadius: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    backgroundColor: "#E3F7F0",
-    alignItems: "center",
-  },
-  resolvedText: {
-    fontFamily: "PixelifySans-Regular",
-    fontSize: 14,
-    color: "#1B1F24",
-  },
-  claimLockedNotice: {
-    borderWidth: 2,
-    borderColor: "#1B1F24",
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    backgroundColor: "#FFF2B8",
-  },
-  claimLockedText: {
-    fontFamily: "IBMPlexMono-Regular",
-    fontSize: 14,
-    color: "#58616B",
-    lineHeight: 20,
-  },
-  notFoundWrapper: {
-    flex: 1,
-    paddingTop: 20,
-  },
-  notFoundCard: {
-    padding: 20,
-    margin: 20,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#1B1F24",
-    backgroundColor: "#FFFFFF",
-  },
-});

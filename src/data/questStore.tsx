@@ -59,284 +59,55 @@ type QuestStore = {
   activeQuest: Quest | null;
   /** True when any quest has status 'in_progress'. Derived from activeQuest. */
   hasActiveQuest: boolean;
-  createQuest: (input: CreateQuestInput) => string;
-  claimQuest: (questId: string) => void;
-  markDone: (questId: string) => void;
-  confirmResolved: (questId: string) => void;
-  filterQuests: (filters: FilterState) => Quest[];
+  createQuest: (input: CreateQuestInput) => Promise<string>;
+  claimQuest: (questId: string) => Promise<void>;
+  markDone: (questId: string) => Promise<void>;
+  confirmResolved: (questId: string) => Promise<void>;
+  filterQuests: (filters: FilterState) => Promise<Quest[]>;
 };
 
 const QuestStoreContext = React.createContext<QuestStore | undefined>(undefined);
 
-const isoNow = () => new Date().toISOString();
-
-const seedQuests: Quest[] = [
-  {
-    id: 'quest-1001',
-    title: 'Print thesis pages',
-    description: 'Need 10 pages printed in color. Pickup at Main Library desk.',
-    location: 'Main Library',
-    rewardPhp: 50,
-    status: 'open',
-    requesterName: 'Andrea C.',
-    requesterId: '241303175',
-    fulfillerName: null,
-    fulfillerDone: false,
-    requesterConfirmed: false,
-    verificationStatus: 'not_started',
-    paymentStatus: 'not_started',
-    tags: ['Printing'],
-    deadline: new Date(Date.now() + 1000 * 60 * 45).toISOString(), // 45 min
-    createdAt: new Date(Date.now() - 1000 * 60 * 40).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 40).toISOString(),
-  },
-  {
-    id: 'quest-1002',
-    title: 'Grab coffee',
-    description: 'Pick up one iced coffee from the student cafe. No extras.',
-    location: 'Student Cafe',
-    rewardPhp: 35,
-    status: 'in_progress',
-    requesterName: 'Miguel R.',
-    requesterId: '239112458',
-    fulfillerName: 'You',
-    fulfillerDone: false,
-    requesterConfirmed: false,
-    verificationStatus: 'pending',
-    paymentStatus: 'pending',
-    tags: ['Food'],
-    deadline: new Date(Date.now() + 1000 * 60 * 20).toISOString(), // 20 min
-    createdAt: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
-  },
-  {
-    id: 'quest-1003',
-    title: 'Deliver textbook to Science Building',
-    description: 'Bring organic chemistry textbook to Room 215. Professor needs it ASAP.',
-    location: 'Science Building',
-    rewardPhp: 75,
-    status: 'open',
-    requesterName: 'Prof. Santos',
-    requesterId: '240005632',
-    fulfillerName: null,
-    fulfillerDone: false,
-    requesterConfirmed: false,
-    verificationStatus: 'not_started',
-    paymentStatus: 'not_started',
-    tags: ['Admin'],
-    deadline: new Date(Date.now() + 1000 * 60 * 30).toISOString(), // 30 min
-    createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-  },
-  {
-    id: 'quest-1004',
-    title: 'Scan documents',
-    description: 'Scan 25 pages of handwritten notes and email as PDF.',
-    location: 'IT Center',
-    rewardPhp: 45,
-    status: 'open',
-    requesterName: 'Jamie K.',
-    requesterId: '239887654',
-    fulfillerName: null,
-    fulfillerDone: false,
-    requesterConfirmed: false,
-    verificationStatus: 'not_started',
-    paymentStatus: 'not_started',
-    tags: ['Printing', 'Admin'],
-    deadline: new Date(Date.now() + 1000 * 60 * 180).toISOString(), // 3 hrs
-    createdAt: new Date(Date.now() - 1000 * 60 * 55).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 55).toISOString(),
-  },
-  {
-    id: 'quest-1005',
-    title: 'Pick up lab samples',
-    description: 'Collect chemistry lab samples from the prep room. Meet outside at 2pm.',
-    location: 'Chemistry Lab',
-    rewardPhp: 60,
-    status: 'open',
-    requesterName: 'Alex T.',
-    requesterId: '238945123',
-    fulfillerName: null,
-    fulfillerDone: false,
-    requesterConfirmed: false,
-    verificationStatus: 'not_started',
-    paymentStatus: 'not_started',
-    tags: ['Queue'],
-    deadline: new Date(Date.now() + 1000 * 60 * 300).toISOString(), // 5 hrs
-    createdAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
-  },
-  {
-    id: 'quest-1006',
-    title: 'Buy snacks for study group',
-    description: 'Get 6 energy drinks and some snacks from the convenience store.',
-    location: 'C-Store',
-    rewardPhp: 200,
-    status: 'open',
-    requesterName: 'Ryan M.',
-    requesterId: '240112234',
-    fulfillerName: null,
-    fulfillerDone: false,
-    requesterConfirmed: false,
-    verificationStatus: 'not_started',
-    paymentStatus: 'not_started',
-    tags: ['Food'],
-    deadline: null,
-    createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-  },
-  {
-    id: 'quest-1007',
-    title: 'Return library books',
-    description: 'Return 4 books to the main desk. I have a late fee due.',
-    location: 'Main Library',
-    rewardPhp: 25,
-    status: 'open',
-    requesterName: 'Emma L.',
-    requesterId: '239654321',
-    fulfillerName: null,
-    fulfillerDone: false,
-    requesterConfirmed: false,
-    verificationStatus: 'not_started',
-    paymentStatus: 'not_started',
-    tags: ['Admin'],
-    deadline: null,
-    createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-  },
-  {
-    id: 'quest-1008',
-    title: 'Tech support - fix laptop',
-    description: 'Help debug my laptop. Something is wrong with the keyboard driver.',
-    location: 'Dorm C',
-    rewardPhp: 80,
-    status: 'open',
-    requesterName: 'Jordan P.',
-    requesterId: '240445678',
-    fulfillerName: null,
-    fulfillerDone: false,
-    requesterConfirmed: false,
-    verificationStatus: 'not_started',
-    paymentStatus: 'not_started',
-    tags: ['Other'],
-    deadline: new Date(Date.now() + 1000 * 60 * 50).toISOString(), // 50 min
-    createdAt: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
-  },
-];
+import { AsyncStorageQuestRepository } from './AsyncStorageQuestRepository';
 
 export const QuestProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [quests, setQuests] = React.useState<Quest[]>(seedQuests);
+  const [quests, setQuests] = React.useState<Quest[]>([]);
+  
+  const repo = React.useMemo(() => new AsyncStorageQuestRepository(), []);
 
-  const createQuest = React.useCallback((input: CreateQuestInput) => {
-    const now = isoNow();
-    const newQuest: Quest = {
-      id: `quest-${Date.now()}`,
-      title: input.title,
-      description: input.description,
-      location: input.location,
-      rewardPhp: input.rewardPhp,
-      status: 'open',
-      requesterName: 'You',
-      requesterId: '240000000',
-      fulfillerName: null,
-      fulfillerDone: false,
-      requesterConfirmed: false,
-      verificationStatus: 'not_started',
-      paymentStatus: 'not_started',
-      tags: input.tags,
-      deadline: input.deadline,
-      createdAt: now,
-      updatedAt: now,
-    };
+  const refreshQuests = React.useCallback(async () => {
+    const data = await repo.getQuests();
+    setQuests(data);
+  }, [repo]);
 
-    setQuests((prev) => [newQuest, ...prev]);
-    return newQuest.id;
-  }, []);
+  React.useEffect(() => {
+    refreshQuests();
+  }, [refreshQuests]);
 
-  const claimQuest = React.useCallback((questId: string) => {
-    setQuests((prev) =>
-      prev.map((quest) => {
-        if (quest.id !== questId || quest.status !== 'open') {
-          return quest;
-        }
+  const createQuest = React.useCallback(async (input: CreateQuestInput) => {
+    const newId = await repo.createQuest(input);
+    await refreshQuests();
+    return newId;
+  }, [repo, refreshQuests]);
 
-        return {
-          ...quest,
-          status: 'in_progress',
-          fulfillerName: 'You',
-          verificationStatus: 'pending',
-          updatedAt: isoNow(),
-        };
-      })
-    );
-  }, []);
+  const claimQuest = React.useCallback(async (questId: string) => {
+    await repo.claimQuest(questId);
+    await refreshQuests();
+  }, [repo, refreshQuests]);
 
-  const markDone = React.useCallback((questId: string) => {
-    setQuests((prev) =>
-      prev.map((quest) => {
-        if (quest.id !== questId || quest.status !== 'in_progress' || quest.fulfillerDone) {
-          return quest;
-        }
+  const markDone = React.useCallback(async (questId: string) => {
+    await repo.markDone(questId);
+    await refreshQuests();
+  }, [repo, refreshQuests]);
 
-        return {
-          ...quest,
-          fulfillerDone: true,
-          verificationStatus: 'verified',
-          paymentStatus: quest.paymentStatus === 'not_started' ? 'pending' : quest.paymentStatus,
-          updatedAt: isoNow(),
-        };
-      })
-    );
-  }, []);
+  const confirmResolved = React.useCallback(async (questId: string) => {
+    await repo.confirmResolved(questId);
+    await refreshQuests();
+  }, [repo, refreshQuests]);
 
-  const confirmResolved = React.useCallback((questId: string) => {
-    setQuests((prev) =>
-      prev.map((quest) => {
-        if (
-          quest.id !== questId ||
-          quest.status !== 'in_progress' ||
-          !quest.fulfillerDone ||
-          quest.requesterConfirmed
-        ) {
-          return quest;
-        }
-
-        return {
-          ...quest,
-          requesterConfirmed: true,
-          status: 'resolved',
-          paymentStatus: 'paid',
-          updatedAt: isoNow(),
-        };
-      })
-    );
-  }, []);
-
-  const filterQuests = React.useCallback((filters: FilterState): Quest[] => {
-    const openQuests = quests.filter((q) => q.status === 'open');
-
-    // Apply tag filter
-    const tagFiltered =
-      filters.tags.length === 0
-        ? openQuests
-        : openQuests.filter((q) => filters.tags.some((t) => q.tags.includes(t)));
-
-    // Apply sort
-    if (filters.sort === 'urgency') {
-      const urgencyOrder: Record<string, number> = { High: 0, Medium: 1, Low: 2 };
-      return [...tagFiltered].sort((a, b) => {
-        const ua = calculateUrgency(a.deadline) ?? 'Low';
-        const ub = calculateUrgency(b.deadline) ?? 'Low';
-        const diff = (urgencyOrder[ua] ?? 2) - (urgencyOrder[ub] ?? 2);
-        if (diff !== 0) return diff;
-        return Date.parse(b.createdAt) - Date.parse(a.createdAt);
-      });
-    }
-
-    // Default: recency
-    return [...tagFiltered].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-  }, [quests]);
+  const filterQuests = React.useCallback(async (filters: FilterState): Promise<Quest[]> => {
+    return repo.filterQuests(filters);
+  }, [repo]);
 
   const value = React.useMemo(() => {
     const activeQuest = quests.find((q) => q.status === 'in_progress') ?? null;

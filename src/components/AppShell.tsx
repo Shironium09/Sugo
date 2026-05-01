@@ -1,18 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppStackParamList } from '../navigation/AppNavigator';
 import { Quest, useQuestStore } from '../data/questStore';
 import { AppHeader } from './AppHeader';
 import { BottomNav } from './BottomNav';
 import { PixelButton } from './PixelButton';
+import { colors } from '../theme/colors';
 
-type NavigationLike = {
-  navigate: (screen: keyof RootStackParamList, params?: any) => void;
-};
+type AppShellNavigation = NativeStackNavigationProp<AppStackParamList>;
 
 type Props = {
-  navigation: NavigationLike;
+  navigation: AppShellNavigation;
   active?: 'Home' | 'CreateQuest' | 'Settings';
   children: React.ReactNode;
   hideOverlay?: boolean;
@@ -76,7 +76,7 @@ export const AppShell: React.FC<Props> = ({ navigation, active, children, hideOv
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F1F7FF',
+    backgroundColor: colors.background,
   },
   body: {
     flex: 1,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   currentQuestPill: {
     borderWidth: 2,
-    borderColor: '#1B1F24',
+    borderColor: colors.ink,
     borderRadius: 0,
     paddingVertical: 12,
     paddingHorizontal: 20,
@@ -101,38 +101,38 @@ const styles = StyleSheet.create({
   currentQuestPillTitle: {
     fontFamily: 'PixelifySans-Regular',
     fontSize: 12,
-    color: '#1B1F24',
+    color: colors.ink,
     marginBottom: 4,
   },
   currentQuestPillHint: {
     fontFamily: 'IBMPlexMono-Regular',
     fontSize: 11,
-    color: '#58616B',
+    color: colors.inkMuted,
   },
   currentQuestExpanded: {
     backgroundColor: 'rgba(255, 255, 255, 0.92)',
     padding: 20,
     borderWidth: 2,
     borderTopWidth: 0,
-    borderColor: '#1B1F24',
+    borderColor: colors.ink,
     borderRadius: 0,
   },
   currentQuestTitle: {
     fontFamily: 'PixelifySans-Regular',
     fontSize: 13,
     marginBottom: 6,
-    color: '#1B1F24',
+    color: colors.ink,
   },
   currentQuestMeta: {
     fontFamily: 'IBMPlexMono-Regular',
     fontSize: 13,
-    color: '#58616B',
+    color: colors.inkMuted,
     marginBottom: 6,
   },
   currentQuestBody: {
     fontFamily: 'IBMPlexMono-Regular',
     fontSize: 13,
-    color: '#1B1F24',
+    color: colors.ink,
     lineHeight: 20,
     marginBottom: 10,
   },

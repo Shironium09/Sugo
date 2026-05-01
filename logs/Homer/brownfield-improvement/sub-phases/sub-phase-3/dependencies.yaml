@@ -1,0 +1,34 @@
+phase: sub-phase-3
+created: 2026-05-01
+schema: athena-default
+feature: Data Layer Drop-in
+
+dependencies:
+  read:
+    - path: docs/project_specification.md
+      reason: Understand overall architecture and requirements
+      priority: critical
+    - path: logs/Homer/brownfield-integration-plan.md
+      reason: Context for integration phase
+      priority: high
+  modify:
+    - path: src/data/questStore.tsx
+      reason: Inject AsyncStorage repository
+      exclusive_lock: true
+      changes: Switch out seed/mock provider with actual repository implementation.
+  create:
+    - path: src/data/AsyncStorageQuestRepository.ts
+      reason: Implement IQuestRepository with local persistence
+      exclusive_lock: true
+
+relationships:
+  requires_phases:
+    - sub-phase-1
+  provides_for_phases: []
+  blocks_if_incomplete: []
+
+context_estimate:
+  read_tokens: 1500
+  total_budget: 5000
+  warning_threshold: 4000
+  status: ok

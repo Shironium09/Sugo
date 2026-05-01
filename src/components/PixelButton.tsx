@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, TouchableOpacityProps, ViewStyle } from 'react-native';
+import { colors } from '../theme/colors';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
@@ -11,18 +12,18 @@ interface PixelButtonProps extends TouchableOpacityProps {
 const variantButtonStyles: Record<ButtonVariant, ViewStyle> = {
   // Default CTA — mint green, fully bordered
   primary: {
-    backgroundColor: '#E3F7F0',
-    borderColor: '#1B1F24',
+    backgroundColor: colors.accentMint,
+    borderColor: colors.ink,
   },
   // Secondary action — blueprint blue tint
   secondary: {
-    backgroundColor: '#EAF3FF',
-    borderColor: '#1B1F24',
+    backgroundColor: colors.surfaceBlue,
+    borderColor: colors.ink,
   },
   // Tertiary / de-emphasized — transparent with muted border
   ghost: {
     backgroundColor: 'transparent',
-    borderColor: '#A0AEBB',
+    borderColor: colors.borderGhost,
   },
 };
 
@@ -53,16 +54,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 8, // corrected from 10 (off 4px grid)
+    marginVertical: 8,
     minWidth: 150,
   },
   text: {
     fontFamily: 'PixelifySans-Regular',
     fontSize: 16,
-    color: '#1B1F24',
+    color: colors.ink,
     textAlign: 'center',
   },
   textGhost: {
-    color: '#58616B',
+    color: colors.inkMuted,
   },
 });

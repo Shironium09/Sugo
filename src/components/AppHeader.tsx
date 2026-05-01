@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { colors } from '../theme/colors';
 
 interface AppHeaderProps {
   onBack?: () => void;
@@ -15,7 +16,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onBack }) => {
           onPress={onBack}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="arrow-back" size={16} color="#1B1F24" />
+          <Ionicons name="arrow-back" size={16} color={colors.ink} />
         </TouchableOpacity>
       )}
       <View style={[styles.logoBox, onBack && styles.logoBoxWithBack]}>
@@ -31,8 +32,8 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 4,
     borderBottomWidth: 2,
-    borderBottomColor: '#1B1F24',
-    backgroundColor: '#FFFFFF',
+    borderBottomColor: colors.ink,
+    backgroundColor: colors.surface,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -40,9 +41,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderWidth: 1.5,
-    borderColor: '#1B1F24',
+    borderColor: colors.ink,
     borderRadius: 6,
-    backgroundColor: '#FFF2B8',
+    backgroundColor: colors.warning,
     alignItems: 'center',
     justifyContent: 'center',
     // hitSlop provides extra 8px tap area on all sides
@@ -51,20 +52,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderWidth: 1.5,
-    borderColor: '#1B1F24',
+    borderColor: colors.ink,
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EAF3FF',
+    backgroundColor: colors.surfaceBlue,
     marginLeft: 'auto', // Pushes the logo to the right side
   },
   logoBoxWithBack: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
   },
   logoText: {
     fontFamily: 'VT323-Regular',
     fontSize: 24,
-    color: '#1B1F24',
+    color: colors.ink,
     letterSpacing: 1,
   },
 });

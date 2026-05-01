@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ALL_TAGS, FilterState, QuestTag } from "../data/questStore";
+import { colors } from "../theme/colors";
 
 type Props = {
   filters: FilterState;
@@ -64,7 +65,7 @@ export const FilterChips: React.FC<Props> = ({ filters, onChange }) => {
         <Ionicons
           name={filters.sort === "recency" ? "time" : "flash"}
           size={18}
-          color="#1B1F24"
+          color={colors.ink}
         />
       </TouchableOpacity>
 
@@ -78,7 +79,7 @@ export const FilterChips: React.FC<Props> = ({ filters, onChange }) => {
         <Ionicons
           name={activeTagsCount > 0 ? "funnel" : "funnel-outline"}
           size={18}
-          color="#1B1F24"
+          color={colors.ink}
         />
         {activeTagsCount > 0 && (
           <View style={styles.badge}>
@@ -115,7 +116,7 @@ export const FilterChips: React.FC<Props> = ({ filters, onChange }) => {
               activeOpacity={0.7}
               onPress={() => setShowTags(false)}
             >
-              <Ionicons name="close" size={20} color="#1B1F24" />
+              <Ionicons name="close" size={20} color={colors.ink} />
             </TouchableOpacity>
           </View>
           <View style={styles.tagsGrid}>
@@ -167,8 +168,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: "#1B1F24",
-    backgroundColor: "#FFFFFF",
+    borderColor: colors.ink,
+    backgroundColor: colors.surface,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -177,9 +178,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -6,
     right: -6,
-    backgroundColor: "#FFD0D0",
+    backgroundColor: colors.urgencyHighBg,
     borderWidth: 2,
-    borderColor: "#1B1F24",
+    borderColor: colors.ink,
     borderRadius: 10,
     width: 18,
     height: 18,
@@ -189,18 +190,18 @@ const styles = StyleSheet.create({
   badgeText: {
     fontFamily: "PixelifySans-Regular",
     fontSize: 11,
-    color: "#1B1F24",
+    color: colors.ink,
   },
   popoverCard: {
     // Absolute within the Modal's fullscreen transparent view
     position: "absolute",
     width: 260,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.surface,
     borderWidth: 2,
-    borderColor: "#1B1F24",
+    borderColor: colors.ink,
     borderRadius: 16,
     padding: 16,
-    shadowColor: "#1B1F24",
+    shadowColor: colors.ink,
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 1,
     shadowRadius: 0,
@@ -212,10 +213,10 @@ const styles = StyleSheet.create({
     right: 11,
     width: 12,
     height: 12,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.surface,
     borderTopWidth: 2,
     borderRightWidth: 2,
-    borderColor: "#1B1F24",
+    borderColor: colors.ink,
     transform: [{ rotate: "-45deg" }],
   },
   popoverHeader: {
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
   popoverTitle: {
     fontFamily: "PixelifySans-Regular",
     fontSize: 18,
-    color: "#1B1F24",
+    color: colors.ink,
   },
   tagsGrid: {
     flexDirection: "row",
@@ -236,36 +237,36 @@ const styles = StyleSheet.create({
   },
   tagChip: {
     borderWidth: 2,
-    borderColor: "#D0D8E0",
+    borderColor: colors.borderSubtle,
     borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 10, // bumped from 6 — meets ~44px vertical tap area
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.surface,
   },
   tagChipActive: {
-    borderColor: "#1B1F24",
-    backgroundColor: "#EAF3FF",
+    borderColor: colors.ink,
+    backgroundColor: colors.surfaceBlue,
   },
   tagChipText: {
     fontFamily: "IBMPlexMono-Regular",
     fontSize: 14,
-    color: "#58616B",
+    color: colors.inkMuted,
   },
   tagChipTextActive: {
-    color: "#1B1F24",
+    color: colors.ink,
   },
   clearButton: {
-    marginTop: 16, // normalized from 24 to fit 8px grid
+    marginTop: 16,
     alignItems: "center",
     paddingVertical: 8,
     borderWidth: 2,
-    borderColor: "#1B1F24",
+    borderColor: colors.ink,
     borderRadius: 12,
-    backgroundColor: "#FFF2B8",
+    backgroundColor: colors.warning,
   },
   clearButtonText: {
     fontFamily: "PixelifySans-Regular",
     fontSize: 14,
-    color: "#1B1F24",
+    color: colors.ink,
   },
 });

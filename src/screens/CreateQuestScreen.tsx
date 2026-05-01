@@ -6,6 +6,7 @@ import { PixelButton } from '../components/PixelButton';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useQuestStore } from '../data/questStore';
 import { AppShell } from '../components/AppShell';
+import { styles } from './CreateQuestScreen.styles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateQuest'>;
 
@@ -16,8 +17,9 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
   const [location, setLocation] = React.useState('');
   const [rewardPhp, setRewardPhp] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setError(null);
     if (!title.trim()) {
       setError('Title is required.');
@@ -40,19 +42,28 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    const newId = createQuest({
-      title: title.trim(),
-      description: description.trim(),
-      location: location.trim(),
-      rewardPhp: rewardValue,
-    });
+    try {
+      setIsSubmitting(true);
+      const newId = await createQuest({
+        title: title.trim(),
+        description: description.trim(),
+        location: location.trim(),
+        rewardPhp: rewardValue,
+        tags: [],
+        deadline: null,
+      });
 
-    setTitle('');
-    setDescription('');
-    setLocation('');
-    setRewardPhp('');
-    setError(null);
-    navigation.navigate('CurrentQuest', { questId: newId });
+      setTitle('');
+      setDescription('');
+      setLocation('');
+      setRewardPhp('');
+      setError(null);
+      navigation.navigate('CurrentQuest', { questId: newId });
+    } catch (err) {
+      setError('Failed to create quest.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (hasActiveQuest) {
@@ -130,82 +141,12 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-        <PixelButton title="Create Quest" onPress={handleSubmit} />
+        <PixelButton 
+          title={isSubmitting ? "Creating..." : "Create Quest"} 
+          onPress={handleSubmit} 
+        />
         <PixelButton variant="ghost" title="Back to Feed" onPress={() => navigation.navigate('Home')} />
       </ScrollView>
     </AppShell>
   );
 };
-
-const styles = StyleSheet.create({
-  content: {
-    padding: 20,
-    paddingBottom: 32,
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: 16,
-    minWidth: 0,
-    paddingHorizontal: 16,
-  },
-  title: {
-    fontFamily: 'PixelifySans-Regular',
-    fontSize: 24, // bumped from 16 — clear dominance over label (12) and input (12)
-    marginBottom: 20,
-    color: '#1B1F24',
-  },
-  fieldGroup: {
-    marginBottom: 16,
-  },
-  label: {
-    fontFamily: 'PixelifySans-Regular',
-    fontSize: 14, // raised from 12
-    marginBottom: 8,
-    color: '#1B1F24',
-  },
-  input: {
-    borderWidth: 2,
-    borderColor: '#1B1F24',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 16,
-    color: '#1B1F24',
-    backgroundColor: '#FFFFFF',
-  },
-  textArea: {
-    minHeight: 90,
-    textAlignVertical: 'top',
-  },
-  errorText: {
-    fontFamily: 'IBMPlexMono-Regular',
-    color: '#B42318',
-    marginBottom: 12,
-    fontSize: 14,
-  },
-  lockedContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  viewQuestButton: {
-    marginTop: 24,
-    alignSelf: 'stretch',
-  },
-  lockedTitle: {
-    fontFamily: 'PixelifySans-Regular',
-    fontSize: 24,
-    color: '#1B1F24',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  lockedText: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 16,
-    color: '#58616B',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-});

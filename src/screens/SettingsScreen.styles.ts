@@ -1,0 +1,127 @@
+import { StyleSheet } from 'react-native';
+import { colors } from '../theme/colors';
+
+export const styles = StyleSheet.create({
+  listContent: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  identityCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 16,
+    padding: 16,
+    backgroundColor: colors.surface,
+    marginBottom: 24,
+    gap: 14,
+  },
+  avatarCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    borderWidth: 2,
+    borderColor: colors.ink,
+    backgroundColor: colors.surfaceBlue,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarInitial: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 24,
+    color: colors.ink,
+  },
+  identityInfo: {
+    flex: 1,
+  },
+  identityName: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 16,
+    color: colors.ink,
+    marginBottom: 4,
+  },
+  identityMeta: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 11,
+    color: colors.inkMuted,
+    lineHeight: 17,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 14,
+    color: colors.ink,
+    marginBottom: 10,
+    backgroundColor: colors.surfaceSubtle,
+    paddingVertical: 4,
+  },
+  card: {
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 10,
+    backgroundColor: colors.surface,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  cardTitle: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 13,
+    color: colors.ink,
+    flex: 1,
+    marginRight: 8,
+  },
+  statusPill: {
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  statusText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 9,
+    color: colors.ink,
+  },
+  metaText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 12,
+    color: colors.inkMuted,
+  },
+  emptyState: {
+    borderWidth: 2,
+    borderColor: colors.borderSubtle,
+    borderRadius: 12,
+    padding: 16,
+    backgroundColor: colors.surfaceSubtle,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  emptyText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 13,
+    color: colors.inkSubtle,
+  },
+  logoutButton: {
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+    backgroundColor: colors.warning,
+    marginTop: 8,
+  },
+  logoutText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 13,
+    color: colors.ink,
+  },
+});
