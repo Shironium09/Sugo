@@ -68,12 +68,12 @@ type QuestStore = {
 
 const QuestStoreContext = React.createContext<QuestStore | undefined>(undefined);
 
-import { AsyncStorageQuestRepository } from './AsyncStorageQuestRepository';
+import { LocalStorageQuestRepository } from './LocalStorageQuestRepository';
 
 export const QuestProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [quests, setQuests] = React.useState<Quest[]>([]);
   
-  const repo = React.useMemo(() => new AsyncStorageQuestRepository(), []);
+  const repo = React.useMemo(() => new LocalStorageQuestRepository(), []);
 
   const refreshQuests = React.useCallback(async () => {
     const data = await repo.getQuests();

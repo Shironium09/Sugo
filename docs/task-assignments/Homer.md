@@ -1,36 +1,27 @@
-# Task Assignment — Lead (Feed + Completion)
+# Task Assignment — Homer (Feed + Completion)
 
-## Scope 
+## Scope
+- Own the Home feed and the quest completion surface.
+- Keep the UI consistent with the locked decisions in the design log.
 
-- Build the main quest feed (hybrid list + abstract radar header).
-- Build quest detail and the full completion flow.
-- Keep UI clear and demo-ready.
-
-## Tasks (detailed)
-
-- Feed screen layout with radar header + scrollable list.
-- List item UI: title, reward, location string, status pill, short teaser.
-- Empty and loading states.
-- Quest detail screen: full info + action buttons.
-- State actions: claim, mark done, confirm resolved.
-- Show mock verification and payment states in the detail view.
-- Guard UI actions based on current status (disable invalid actions).
+## Tasks
+- Keep the 40/60 Home layout: map placeholder above, scrollable quest list below.
+- Preserve the expandable Current Quest pill overlay on the Home map area.
+- Keep quest cards aligned with the decided content order: title, status, meta, requester, teaser.
+- Maintain the full quest detail flow with claim, mark done, and confirm resolved actions.
+- Keep loading, empty, and invalid-action states obvious but lightweight for the POC.
+- Show mock verification/payment state in the detail view without introducing real backend logic.
 
 ## Integration notes
-
-- Use the quest repository API from Dev B (AsyncStorage).
-- Use navigation routes from Dev C (feed as the main entry point).
-- Expect local-only data and mock states (no real payment).
+- Use the current local quest store contract from `questStore.tsx`.
+- The feed entry point is Home; do not depend on a separate auth gate.
+- Keep the Profile hub behavior aligned with `SettingsScreen.tsx` and the bottom-nav decision.
 
 ## Out of scope
-
-- Real payments or live location.
-- Real-time chat.
+- Live maps or live location services.
+- Real-time chat or backend sync.
 
 ## AI handoff (short)
-
-- Goal: build feed + completion UI in React Native.
-- Data comes from local repository (no backend).
-- Feed is a list with an abstract radar header.
-- Completion flow uses mock verification/payment states.
-- Keep it simple and stable for a demo.
+- Goal: keep the feed and quest completion experience demo-ready.
+- Follow the locked quest-card, urgency, and tag decisions.
+- Stay compatible with the current Home-first navigation.

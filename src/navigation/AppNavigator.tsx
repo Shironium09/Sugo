@@ -11,7 +11,6 @@ import { NearbyScreen } from '../screens/NearbyScreen';
 import { CurrentQuestScreen } from '../screens/CurrentQuestScreen';
 import { CreateQuestScreen } from '../screens/CreateQuestScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
-import { useAuth } from '../data/AuthContext';
 
 export type AuthStackParamList = {
   Landing: undefined;
@@ -32,8 +31,7 @@ export type AppStackParamList = {
 // Merged list for backward compatibility across components
 export type RootStackParamList = AuthStackParamList & AppStackParamList;
 
-const AuthStack = createNativeStackNavigator<AuthStackParamList>();
-const AppStack = createNativeStackNavigator<AppStackParamList>();
+const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const screenOptions = {
   headerShown: false,
@@ -41,23 +39,18 @@ const screenOptions = {
 };
 
 export const AppNavigator = () => {
-  const { isAuthenticated } = useAuth();
-
-  return isAuthenticated ? (
-    <AppStack.Navigator screenOptions={screenOptions} initialRouteName="Home">
-      <AppStack.Screen name="Home" component={HomeScreen} />
-      <AppStack.Screen name="Nearby" component={NearbyScreen} />
-      <AppStack.Screen name="CurrentQuest" component={CurrentQuestScreen} />
-      <AppStack.Screen name="CreateQuest" component={CreateQuestScreen} />
-      <AppStack.Screen name="Settings" component={SettingsScreen} />
-    </AppStack.Navigator>
-  ) : (
-    <AuthStack.Navigator screenOptions={screenOptions} initialRouteName="Landing">
-      <AuthStack.Screen name="Landing" component={LandingScreen} />
-      <AuthStack.Screen name="Welcome" component={WelcomeScreen} />
-      <AuthStack.Screen name="Login" component={LoginScreen} />
-      <AuthStack.Screen name="SignUp" component={SignUpScreen} />
-      <AuthStack.Screen name="Verification" component={VerificationScreen} />
-    </AuthStack.Navigator>
+  return (
+    <RootStack.Navigator screenOptions={screenOptions} initialRouteName="Home">
+      <RootStack.Screen name="Home" component={HomeScreen} />
+      <RootStack.Screen name="Nearby" component={NearbyScreen} />
+      <RootStack.Screen name="CurrentQuest" component={CurrentQuestScreen} />
+      <RootStack.Screen name="CreateQuest" component={CreateQuestScreen} />
+      <RootStack.Screen name="Settings" component={SettingsScreen} />
+      <RootStack.Screen name="Landing" component={LandingScreen} />
+      <RootStack.Screen name="Welcome" component={WelcomeScreen} />
+      <RootStack.Screen name="Login" component={LoginScreen} />
+      <RootStack.Screen name="SignUp" component={SignUpScreen} />
+      <RootStack.Screen name="Verification" component={VerificationScreen} />
+    </RootStack.Navigator>
   );
 };
