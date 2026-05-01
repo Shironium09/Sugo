@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { PixelButton } from '../components/PixelButton';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useQuestStore } from '../data/questStore';
@@ -9,14 +10,17 @@ import { AppShell } from '../components/AppShell';
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateQuest'>;
 
 export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
-  const { createQuest } = useQuestStore();
+  const { quests, createQuest } = useQuestStore();
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [location, setLocation] = React.useState('');
   const [rewardPhp, setRewardPhp] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
 
+  const hasActiveQuest = quests.some((q) => q.status === 'in_progress');
+
   const handleSubmit = () => {
+    setError(null);
     if (!title.trim()) {
       setError('Title is required.');
       return;
@@ -52,6 +56,20 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
     setError(null);
     navigation.navigate('CurrentQuest', { questId: newId });
   };
+
+  if (hasActiveQuest) {
+    return (
+      <AppShell navigation={navigation} active="CreateQuest">
+        <View style={styles.lockedContainer}>
+          <Ionicons name="lock-closed" size={48} color="#1B1F24" style={{ marginBottom: 16 }} />
+          <Text style={styles.lockedTitle}>Quest in Progress</Text>
+          <Text style={styles.lockedText}>
+            You must resolve your current quest before you can request a new one. This ensures everyone gets their tasks done!
+          </Text>
+        </View>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell navigation={navigation} active="CreateQuest">
@@ -160,5 +178,25 @@ const styles = StyleSheet.create({
     color: '#B42318',
     marginBottom: 12,
     fontSize: 12,
+  },
+  lockedContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  lockedTitle: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 20,
+    color: '#1B1F24',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  lockedText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 14,
+    color: '#58616B',
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });

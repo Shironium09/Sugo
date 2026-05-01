@@ -13,11 +13,17 @@ const statusLabel: Record<Quest['status'], string> = {
   resolved: 'Resolved',
 };
 
+const statusColor: Record<Quest['status'], string> = {
+  open: '#E3F7F0',
+  in_progress: '#FFF2B8',
+  resolved: '#F0F0F0',
+};
+
 export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { quests } = useQuestStore();
 
   const availableQuests = React.useMemo(
-    () => quests.filter((quest) => quest.status !== 'resolved'),
+    () => quests.filter((quest) => quest.status === 'open'),
     [quests]
   );
 
@@ -42,23 +48,26 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     </View>
   );
 
-  const renderItem = ({ item }: { item: Quest }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => navigation.navigate('CurrentQuest', { questId: item.id })}
-    >
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <View style={styles.statusPill}>
-          <Text style={styles.statusText}>{statusLabel[item.status]}</Text>
+  const renderItem = React.useCallback(
+    ({ item }: { item: Quest }) => (
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate('CurrentQuest', { questId: item.id })}
+      >
+        <View style={styles.cardHeader}>
+          <Text style={styles.cardTitle}>{item.title}</Text>
+          <View style={[styles.statusPill, { backgroundColor: statusColor[item.status] }]}>
+            <Text style={styles.statusText}>{statusLabel[item.status]}</Text>
+          </View>
         </View>
-      </View>
-      <Text style={styles.metaText}>PHP {item.rewardPhp} - {item.location}</Text>
-      <Text style={styles.requesterText}>{item.requesterName} - {item.requesterId}</Text>
-      <Text style={styles.teaserText} numberOfLines={2}>
-        {item.description}
-      </Text>
-    </TouchableOpacity>
+        <Text style={styles.metaText}>PHP {item.rewardPhp} - {item.location}</Text>
+        <Text style={styles.requesterText}>{item.requesterName}</Text>
+        <Text style={styles.teaserText} numberOfLines={2}>
+          {item.description}
+        </Text>
+      </TouchableOpacity>
+    ),
+    [navigation]
   );
 
   return (
@@ -182,7 +191,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    backgroundColor: '#E3F7F0',
   },
   statusText: {
     fontFamily: 'PixelifySans-Regular',

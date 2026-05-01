@@ -15,9 +15,11 @@ type Props = {
   navigation: NavigationLike;
   active?: 'Home' | 'CreateQuest' | 'Settings';
   children: React.ReactNode;
+  hideOverlay?: boolean;
+  onBack?: () => void;
 };
 
-export const AppShell: React.FC<Props> = ({ navigation, active, children }) => {
+export const AppShell: React.FC<Props> = ({ navigation, active, children, hideOverlay = false, onBack }) => {
   const { quests } = useQuestStore();
   const [isCurrentExpanded, setIsCurrentExpanded] = React.useState(false);
 
@@ -26,45 +28,51 @@ export const AppShell: React.FC<Props> = ({ navigation, active, children }) => {
     [quests]
   );
 
+  React.useEffect(() => {
+    if (!currentQuest) setIsCurrentExpanded(false);
+  }, [currentQuest]);
+
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader />
+      <AppHeader onBack={onBack} />
       <View style={styles.body}>
         {children}
-        <View style={styles.currentQuestOverlay} pointerEvents="box-none">
-          <TouchableOpacity
-            style={styles.currentQuestPill}
-            onPress={() => setIsCurrentExpanded((prev) => !prev)}
-          >
-            <Text style={styles.currentQuestPillTitle}>Current Quest</Text>
-            <Text style={styles.currentQuestPillHint}>
-              {isCurrentExpanded ? 'Tap to collapse' : 'Tap to expand'}
-            </Text>
-          </TouchableOpacity>
-          {isCurrentExpanded && (
-            <View style={styles.currentQuestExpanded}>
-              {currentQuest ? (
-                <>
-                  <Text style={styles.currentQuestTitle}>{currentQuest.title}</Text>
-                  <Text style={styles.currentQuestMeta}>
-                    PHP {currentQuest.rewardPhp} - {currentQuest.location}
+        {!hideOverlay && (
+          <View style={styles.currentQuestOverlay} pointerEvents="box-none">
+            <TouchableOpacity
+              style={styles.currentQuestPill}
+              onPress={() => setIsCurrentExpanded((prev) => !prev)}
+            >
+              <Text style={styles.currentQuestPillTitle}>Current Quest</Text>
+              <Text style={styles.currentQuestPillHint}>
+                {isCurrentExpanded ? 'Tap to collapse' : 'Tap to expand'}
+              </Text>
+            </TouchableOpacity>
+            {isCurrentExpanded && (
+              <View style={styles.currentQuestExpanded}>
+                {currentQuest ? (
+                  <>
+                    <Text style={styles.currentQuestTitle}>{currentQuest.title}</Text>
+                    <Text style={styles.currentQuestMeta}>
+                      PHP {currentQuest.rewardPhp} - {currentQuest.location}
+                    </Text>
+                    <Text style={styles.currentQuestBody} numberOfLines={2}>
+                      {currentQuest.description}
+                    </Text>
+                    <PixelButton
+                      title="Open Current Quest"
+                      onPress={() => navigation.navigate('CurrentQuest', { questId: currentQuest.id })}
+                    />
+                  </>
+                ) : (
+                  <Text style={styles.currentQuestEmpty}>
+                    No active quest yet. Claim one from the feed or create a new quest.
                   </Text>
-                  <Text style={styles.currentQuestBody} numberOfLines={2}>
-                    {currentQuest.description}
-                  </Text>
-                  <PixelButton
-                    title="Open Current Quest"
-                    onPress={() => navigation.navigate('CurrentQuest', { questId: currentQuest.id })}
-                  />
-                </>
-              ) : (
-                <Text style={styles.currentQuestEmpty}>
-                  No active quest yet. Claim one from the feed or create a new quest.
-                </Text>
-              )}
-            </View>
-          )}
-        </View>
+                )}
+              </View>
+            )}
+          </View>
+        )}
       </View>
       <BottomNav navigation={navigation} active={active} />
     </SafeAreaView>
