@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PixelButton } from '../components/PixelButton';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { PaymentStatus, Quest, useQuestStore, VerificationStatus } from '../data/questStore';
-import { AppHeader } from '../components/AppHeader';
-import { BottomNav } from '../components/BottomNav';
+import { AppShell } from '../components/AppShell';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CurrentQuest'>;
 
@@ -41,19 +40,20 @@ export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
 
   if (!quest) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.notFoundCard}>
-          <Text style={styles.title}>Quest not found</Text>
-          <Text style={styles.bodyText}>Head back to the feed and pick another quest.</Text>
+      <AppShell navigation={navigation} active="Home">
+        <View style={styles.notFoundWrapper}>
+          <View style={styles.notFoundCard}>
+            <Text style={styles.title}>Quest not found</Text>
+            <Text style={styles.bodyText}>Head back to the feed and pick another quest.</Text>
+          </View>
+          <PixelButton title="Back to Feed" onPress={() => navigation.navigate('Home')} />
         </View>
-        <PixelButton title="Back to Feed" onPress={() => navigation.navigate('Home')} />
-      </SafeAreaView>
+      </AppShell>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AppHeader />
+    <AppShell navigation={navigation} active="Home">
       <ScrollView contentContainerStyle={styles.content}>
         <PixelButton title="Back" onPress={() => navigation.goBack()} style={styles.backButton} />
         <Text style={styles.title}>{quest.title}</Text>
@@ -74,7 +74,7 @@ export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Progress Steps (Mock)</Text>
+          <Text style={styles.sectionTitle}>Progress Step (Mock)</Text>
           {progressSteps.map((step, index) => (
             <View key={step.id} style={styles.stepRow}>
               <View style={[styles.stepDot, step.done ? styles.stepDotDone : styles.stepDotPending]} />
@@ -105,16 +105,11 @@ export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
 
         <PixelButton title="Back to Feed" onPress={() => navigation.navigate('Home')} />
       </ScrollView>
-      <BottomNav navigation={navigation} active="Home" />
-    </SafeAreaView>
+    </AppShell>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F1F7FF',
-  },
   content: {
     padding: 20,
   },
@@ -203,6 +198,10 @@ const styles = StyleSheet.create({
     fontFamily: 'PixelifySans-Regular',
     fontSize: 10,
     color: '#1B1F24',
+  },
+  notFoundWrapper: {
+    flex: 1,
+    paddingTop: 20,
   },
   notFoundCard: {
     padding: 20,

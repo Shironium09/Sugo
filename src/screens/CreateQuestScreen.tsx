@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PixelButton } from '../components/PixelButton';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useQuestStore } from '../data/questStore';
-import { AppHeader } from '../components/AppHeader';
-import { BottomNav } from '../components/BottomNav';
+import { AppShell } from '../components/AppShell';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateQuest'>;
 
@@ -39,7 +38,7 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    createQuest({
+    const newId = createQuest({
       title: title.trim(),
       description: description.trim(),
       location: location.trim(),
@@ -51,12 +50,11 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
     setLocation('');
     setRewardPhp('');
     setError(null);
-    navigation.navigate('Home');
+    navigation.navigate('CurrentQuest', { questId: newId });
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AppHeader />
+    <AppShell navigation={navigation} active="CreateQuest">
       <ScrollView contentContainerStyle={styles.content}>
         <PixelButton title="Back" onPress={() => navigation.goBack()} style={styles.backButton} />
         <Text style={styles.title}>Create Quest</Text>
@@ -112,16 +110,11 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
         <PixelButton title="Create Quest" onPress={handleSubmit} />
         <PixelButton title="Back to Feed" onPress={() => navigation.navigate('Home')} />
       </ScrollView>
-      <BottomNav navigation={navigation} active="CreateQuest" />
-    </SafeAreaView>
+    </AppShell>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F1F7FF',
-  },
   content: {
     padding: 20,
     paddingBottom: 32,

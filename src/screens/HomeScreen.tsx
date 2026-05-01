@@ -1,11 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { PixelButton } from '../components/PixelButton';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { Quest, useQuestStore } from '../data/questStore';
-import { AppHeader } from '../components/AppHeader';
-import { BottomNav } from '../components/BottomNav';
+import { AppShell } from '../components/AppShell';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -17,7 +15,6 @@ const statusLabel: Record<Quest['status'], string> = {
 
 export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { quests } = useQuestStore();
-  const [isCurrentExpanded, setIsCurrentExpanded] = React.useState(false);
 
   const availableQuests = React.useMemo(
     () => quests.filter((quest) => quest.status !== 'resolved'),
@@ -27,11 +24,6 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const sortedQuests = React.useMemo(
     () => [...availableQuests].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)),
     [availableQuests]
-  );
-
-  const currentQuest = React.useMemo(
-    () => sortedQuests.find((quest) => quest.status === 'in_progress') ?? null,
-    [sortedQuests]
   );
 
   const renderHeader = () => (
@@ -70,44 +62,9 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AppHeader />
+    <AppShell navigation={navigation} active="Home">
       <View style={styles.content}>
         <View style={styles.mapPanel}>
-          <View style={styles.currentQuestSection}>
-            <TouchableOpacity
-              style={styles.currentQuestPill}
-              onPress={() => setIsCurrentExpanded((prev) => !prev)}
-            >
-              <Text style={styles.currentQuestPillTitle}>Current Quest</Text>
-              <Text style={styles.currentQuestPillHint}>
-                {isCurrentExpanded ? 'Tap to collapse' : 'Tap to expand'}
-              </Text>
-            </TouchableOpacity>
-            {isCurrentExpanded && (
-              <View style={styles.currentQuestExpanded}>
-                {currentQuest ? (
-                  <>
-                    <Text style={styles.currentQuestTitle}>{currentQuest.title}</Text>
-                    <Text style={styles.currentQuestMeta}>
-                      PHP {currentQuest.rewardPhp} - {currentQuest.location}
-                    </Text>
-                    <Text style={styles.currentQuestBody} numberOfLines={2}>
-                      {currentQuest.description}
-                    </Text>
-                    <PixelButton
-                      title="Open Current Quest"
-                      onPress={() => navigation.navigate('CurrentQuest', { questId: currentQuest.id })}
-                    />
-                  </>
-                ) : (
-                  <Text style={styles.currentQuestEmpty}>
-                    No active quest yet. Claim one from the feed or create a new quest.
-                  </Text>
-                )}
-              </View>
-            )}
-          </View>
           <View style={styles.mapSurface}>
             <Text style={styles.mapLabel}>Minimal Campus Map (Mock)</Text>
           </View>
@@ -123,16 +80,11 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
           />
         </View>
       </View>
-      <BottomNav navigation={navigation} active="Home" />
-    </SafeAreaView>
+    </AppShell>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F1F7FF',
-  },
   content: {
     flex: 1,
   },
@@ -144,9 +96,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAF3FF',
     borderBottomWidth: 2,
     borderBottomColor: '#1B1F24',
-  },
-  currentQuestSection: {
-    marginBottom: 12,
   },
   mapSurface: {
     flex: 1,
@@ -162,59 +111,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#1B1F24',
     textAlign: 'center',
-  },
-  currentQuestPill: {
-    borderWidth: 2,
-    borderColor: '#1B1F24',
-    borderRadius: 999,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    backgroundColor: '#FFF2B8',
-    width: '100%',
-  },
-  currentQuestPillTitle: {
-    fontFamily: 'PixelifySans-Regular',
-    fontSize: 12,
-    color: '#1B1F24',
-    marginBottom: 4,
-  },
-  currentQuestPillHint: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 11,
-    color: '#58616B',
-  },
-  currentQuestExpanded: {
-    borderWidth: 2,
-    borderColor: '#1B1F24',
-    borderRadius: 16,
-    padding: 12,
-    backgroundColor: '#FFFFFF',
-    marginTop: 10,
-  },
-  currentQuestTitle: {
-    fontFamily: 'PixelifySans-Regular',
-    fontSize: 13,
-    marginBottom: 6,
-    color: '#1B1F24',
-  },
-  currentQuestMeta: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 13,
-    color: '#58616B',
-    marginBottom: 6,
-  },
-  currentQuestBody: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 13,
-    color: '#1B1F24',
-    lineHeight: 20,
-    marginBottom: 10,
-  },
-  currentQuestEmpty: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 13,
-    color: '#58616B',
-    lineHeight: 20,
   },
   listPanel: {
     flex: 0.6,
