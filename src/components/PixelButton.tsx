@@ -15,9 +15,9 @@ export const PixelButton: React.FC<PixelButtonProps> = ({ title, style, ...rest 
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#E3F7F0',
     borderWidth: 2,
-    borderColor: '#000000',
+    borderColor: '#1B1F24',
     borderRadius: 20,
     paddingVertical: 12,
     paddingHorizontal: 24,
@@ -27,9 +27,9 @@ const styles = StyleSheet.create({
     minWidth: 150,
   },
   text: {
-    fontFamily: 'PressStart2P-Regular',
+    fontFamily: 'PixelifySans-Regular',
     fontSize: 12,
-    color: '#000000',
+    color: '#1B1F24',
     textAlign: 'center',
   },
 });

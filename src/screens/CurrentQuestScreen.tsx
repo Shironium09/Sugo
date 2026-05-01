@@ -1,25 +1,215 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PixelButton } from '../components/PixelButton';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { PaymentStatus, Quest, useQuestStore, VerificationStatus } from '../data/questStore';
+import { AppHeader } from '../components/AppHeader';
+import { BottomNav } from '../components/BottomNav';
 
-type Props = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'CurrentQuest'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'CurrentQuest'>;
+
+const verificationLabel: Record<VerificationStatus, string> = {
+  not_started: 'Not started',
+  pending: 'Pending',
+  verified: 'Verified',
 };
 
-export const CurrentQuestScreen: React.FC<Props> = ({ navigation }) => {
+const paymentLabel: Record<PaymentStatus, string> = {
+  not_started: 'Not started',
+  pending: 'Pending',
+  paid: 'Paid',
+};
+
+export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
+  const { quests, claimQuest, markDone, confirmResolved } = useQuestStore();
+  const quest = React.useMemo(
+    () => quests.find((item: Quest) => item.id === route.params.questId),
+    [quests, route.params.questId]
+  );
+
+  const progressSteps = React.useMemo(
+    () => [
+      { id: 'posted', label: 'Request posted', done: true },
+      { id: 'claimed', label: 'Quest claimed', done: quest?.status !== 'open' },
+      { id: 'in_progress', label: 'Task in progress', done: quest?.status !== 'open' },
+      { id: 'fulfiller_done', label: 'Fulfiller marked done', done: quest?.fulfillerDone },
+      { id: 'requester_confirmed', label: 'Requester confirmed', done: quest?.requesterConfirmed },
+    ],
+    [quest]
+  );
+
+  if (!quest) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.notFoundCard}>
+          <Text style={styles.title}>Quest not found</Text>
+          <Text style={styles.bodyText}>Head back to the feed and pick another quest.</Text>
+        </View>
+        <PixelButton title="Back to Feed" onPress={() => navigation.navigate('Home')} />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Current Quest Screen</Text>
-      <PixelButton title="Go to Home" onPress={() => navigation.navigate('Home')} />
-      <PixelButton title="Go to Nearby" onPress={() => navigation.navigate('Nearby')} />
-      <PixelButton title="Go to Settings" onPress={() => navigation.navigate('Settings')} />
+      <AppHeader />
+      <ScrollView contentContainerStyle={styles.content}>
+        <PixelButton title="Back" onPress={() => navigation.goBack()} style={styles.backButton} />
+        <Text style={styles.title}>{quest.title}</Text>
+        <Text style={styles.subTitle}>PHP {quest.rewardPhp} - {quest.location}</Text>
+        <Text style={styles.bodyText}>{quest.description}</Text>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Status</Text>
+          <Text style={styles.metaText}>Quest: {quest.status.replace('_', ' ')}</Text>
+          <Text style={styles.metaText}>Verification: {verificationLabel[quest.verificationStatus]}</Text>
+          <Text style={styles.metaText}>Payment: {paymentLabel[quest.paymentStatus]}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Completion</Text>
+          <Text style={styles.metaText}>Fulfiller done: {quest.fulfillerDone ? 'Yes' : 'No'}</Text>
+          <Text style={styles.metaText}>Requester confirmed: {quest.requesterConfirmed ? 'Yes' : 'No'}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Progress Steps (Mock)</Text>
+          {progressSteps.map((step, index) => (
+            <View key={step.id} style={styles.stepRow}>
+              <View style={[styles.stepDot, step.done ? styles.stepDotDone : styles.stepDotPending]} />
+              <Text style={styles.stepText}>{index + 1}. {step.label}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.actions}>
+          {quest.status === 'open' && (
+            <PixelButton title="Claim Quest" onPress={() => claimQuest(quest.id)} />
+          )}
+
+          {quest.status === 'in_progress' && !quest.fulfillerDone && (
+            <PixelButton title="Mark Done" onPress={() => markDone(quest.id)} />
+          )}
+
+          {quest.status === 'in_progress' && quest.fulfillerDone && !quest.requesterConfirmed && (
+            <PixelButton title="Confirm Resolved" onPress={() => confirmResolved(quest.id)} />
+          )}
+
+          {quest.status === 'resolved' && (
+            <View style={styles.resolvedBadge}>
+              <Text style={styles.resolvedText}>Quest resolved</Text>
+            </View>
+          )}
+        </View>
+
+        <PixelButton title="Back to Feed" onPress={() => navigation.navigate('Home')} />
+      </ScrollView>
+      <BottomNav navigation={navigation} active="Home" />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFFFFF', justifyContent: 'center', alignItems: 'center' },
-  title: { fontFamily: 'PressStart2P-Regular', fontSize: 16, marginBottom: 20, textAlign: 'center' },
+  container: {
+    flex: 1,
+    backgroundColor: '#F1F7FF',
+  },
+  content: {
+    padding: 20,
+  },
+  title: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#1B1F24',
+  },
+  subTitle: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 12,
+    color: '#58616B',
+    marginBottom: 12,
+  },
+  bodyText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 12,
+    color: '#1B1F24',
+    lineHeight: 18,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 16,
+    minWidth: 0,
+    paddingHorizontal: 16,
+  },
+  section: {
+    marginTop: 18,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#1B1F24',
+    backgroundColor: '#FFFFFF',
+  },
+  sectionTitle: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 10,
+    marginBottom: 8,
+    color: '#1B1F24',
+  },
+  metaText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 12,
+    color: '#58616B',
+    marginBottom: 6,
+  },
+  stepRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  stepDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#1B1F24',
+    marginRight: 8,
+  },
+  stepDotDone: {
+    backgroundColor: '#1B1F24',
+  },
+  stepDotPending: {
+    backgroundColor: '#FFFFFF',
+  },
+  stepText: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 12,
+    color: '#1B1F24',
+  },
+  actions: {
+    marginTop: 18,
+    marginBottom: 8,
+  },
+  resolvedBadge: {
+    borderWidth: 2,
+    borderColor: '#1B1F24',
+    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    backgroundColor: '#E3F7F0',
+    alignItems: 'center',
+  },
+  resolvedText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 10,
+    color: '#1B1F24',
+  },
+  notFoundCard: {
+    padding: 20,
+    margin: 20,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#1B1F24',
+    backgroundColor: '#FFFFFF',
+  },
 });

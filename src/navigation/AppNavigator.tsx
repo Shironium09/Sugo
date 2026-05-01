@@ -19,7 +19,7 @@ export type RootStackParamList = {
   Verification: undefined;
   Home: undefined;
   Nearby: undefined;
-  CurrentQuest: undefined;
+  CurrentQuest: { questId: string };
   CreateQuest: undefined;
   Settings: undefined;
 };
@@ -31,7 +31,7 @@ export const AppNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: '#87CEEB' }, // Light blue background
+        contentStyle: { backgroundColor: '#F1F7FF' },
       }}
       initialRouteName="Landing"
     >
