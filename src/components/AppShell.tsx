@@ -37,7 +37,7 @@ export const AppShell: React.FC<Props> = ({ navigation, active, children, hideOv
       <AppHeader onBack={onBack} />
       <View style={styles.body}>
         {children}
-        {!hideOverlay && (
+        {!hideOverlay && currentQuest && (
           <View style={styles.currentQuestOverlay} pointerEvents="box-none">
             <TouchableOpacity
               style={styles.currentQuestPill}
@@ -50,25 +50,19 @@ export const AppShell: React.FC<Props> = ({ navigation, active, children, hideOv
             </TouchableOpacity>
             {isCurrentExpanded && (
               <View style={styles.currentQuestExpanded}>
-                {currentQuest ? (
-                  <>
-                    <Text style={styles.currentQuestTitle}>{currentQuest.title}</Text>
-                    <Text style={styles.currentQuestMeta}>
-                      PHP {currentQuest.rewardPhp} - {currentQuest.location}
-                    </Text>
-                    <Text style={styles.currentQuestBody} numberOfLines={2}>
-                      {currentQuest.description}
-                    </Text>
-                    <PixelButton
-                      title="Open Current Quest"
-                      onPress={() => navigation.navigate('CurrentQuest', { questId: currentQuest.id })}
-                    />
-                  </>
-                ) : (
-                  <Text style={styles.currentQuestEmpty}>
-                    No active quest yet. Claim one from the feed or create a new quest.
+                <>
+                  <Text style={styles.currentQuestTitle}>{currentQuest.title}</Text>
+                  <Text style={styles.currentQuestMeta}>
+                    PHP {currentQuest.rewardPhp} - {currentQuest.location}
                   </Text>
-                )}
+                  <Text style={styles.currentQuestBody} numberOfLines={2}>
+                    {currentQuest.description}
+                  </Text>
+                  <PixelButton
+                    title="Open Current Quest"
+                    onPress={() => navigation.navigate('CurrentQuest', { questId: currentQuest.id })}
+                  />
+                </>
               </View>
             )}
           </View>
@@ -141,11 +135,5 @@ const styles = StyleSheet.create({
     color: '#1B1F24',
     lineHeight: 20,
     marginBottom: 10,
-  },
-  currentQuestEmpty: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 13,
-    color: '#58616B',
-    lineHeight: 20,
   },
 });
