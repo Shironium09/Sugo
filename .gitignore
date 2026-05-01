@@ -41,5 +41,5 @@ yarn-error.*
 /android
 
 # user folders
-# .agent/
+.agent/
 
