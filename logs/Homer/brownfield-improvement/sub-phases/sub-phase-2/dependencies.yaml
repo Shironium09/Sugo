@@ -1,0 +1,38 @@
+phase: sub-phase-2
+created: 2026-05-01
+schema: athena-default
+feature: Navigation & Auth Scaffolding
+
+dependencies:
+  read:
+    - path: docs/project_specification.md
+      reason: Understand overall architecture and requirements
+      priority: critical
+    - path: logs/Homer/brownfield-integration-plan.md
+      reason: Context for integration phase
+      priority: high
+  modify:
+    - path: src/navigation/AppNavigator.tsx
+      reason: Refactor for guarded routing
+      exclusive_lock: true
+      changes: Conditionally render AuthStack vs AppStack.
+    - path: src/screens/CreateQuestScreen.tsx
+      reason: Wire to async quest store
+      exclusive_lock: true
+      changes: Submit form via async methods.
+  create:
+    - path: src/data/AuthContext.tsx
+      reason: Simple Auth Interface
+      exclusive_lock: true
+
+relationships:
+  requires_phases:
+    - sub-phase-1
+  provides_for_phases: []
+  blocks_if_incomplete: []
+
+context_estimate:
+  read_tokens: 1500
+  total_budget: 5000
+  warning_threshold: 4000
+  status: ok

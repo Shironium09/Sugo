@@ -1,0 +1,54 @@
+phase: brownfield-integration
+mission: "Unblock brownfield development by resolving architectural coupling (Data, Auth, Navigation) and establishing strict interface boundaries."
+success_criteria:
+  - "[ ] No UI blocking: Bryce can modify repository storage without touching UI."
+  - "[ ] Safe Routing: Dustin can build auth stub and UI handles routing dynamically."
+  - "[ ] Synchronous Elimination: Zero synchronous data mutations for business logic."
+estimated_hours: 15
+
+sub_phases:
+  # Phase 1: Async-ify the UI Contract
+  - id: sub-phase-1
+    name: Async-ify the UI Contract
+    persona: Kairou (Architect) / Homer
+    time_estimate: 5h
+    dependencies: []
+    files_to_modify: 
+      - src/data/questStore.tsx
+      - src/screens/HomeScreen.tsx
+      - src/components/AppShell.tsx
+    tasks:
+      - Define IQuestRepository interface with async methods
+      - Mock async behavior in questStore.tsx returning Promises
+      - Refactor UI consumers to use await and handle loading states
+
+  # Phase 2: Navigation & Auth Scaffolding
+  - id: sub-phase-2
+    name: Navigation & Auth Scaffolding
+    persona: Dustin
+    time_estimate: 5h
+    dependencies: [sub-phase-1]
+    files_to_create:
+      - src/data/AuthContext.tsx
+    files_to_modify:
+      - src/navigation/AppNavigator.tsx
+      - src/screens/CreateQuestScreen.tsx
+    tasks:
+      - Create AuthContext with simple interface
+      - Refactor AppNavigator for guarded routing (AuthStack vs AppStack)
+      - Wire CreateQuest to async questStore methods
+
+  # Phase 3: The Data Layer Drop-in
+  - id: sub-phase-3
+    name: The Data Layer Drop-in
+    persona: Bryce
+    time_estimate: 5h
+    dependencies: [sub-phase-1]
+    files_to_create:
+      - src/data/AsyncStorageQuestRepository.ts
+    files_to_modify:
+      - src/data/questStore.tsx
+    tasks:
+      - Implement AsyncStorageQuestRepository
+      - Apply Dependency Injection in QuestProvider
+      - Implement Mock Verification States

@@ -1,0 +1,42 @@
+phase: sub-phase-1
+created: 2026-05-01
+schema: athena-default
+feature: Async-ify UI Contract
+
+dependencies:
+  read:
+    - path: docs/project_specification.md
+      reason: Understand overall architecture and requirements
+      priority: critical
+    - path: logs/Homer/brownfield-integration-plan.md
+      reason: Context for integration phase
+      priority: high
+  modify:
+    - path: src/data/questStore.tsx
+      reason: Define IQuestRepository and mock async methods
+      exclusive_lock: true
+      changes: Convert synchronous methods to async/Promises.
+    - path: src/screens/HomeScreen.tsx
+      reason: Refactor consumers to await
+      exclusive_lock: true
+      changes: Handle promises and loading states.
+    - path: src/components/AppShell.tsx
+      reason: Refactor consumers to await
+      exclusive_lock: true
+      changes: Handle promises.
+  create: []
+
+relationships:
+  requires_phases: []
+  provides_for_phases:
+    - sub-phase-2
+    - sub-phase-3
+  blocks_if_incomplete:
+    - sub-phase-2
+    - sub-phase-3
+
+context_estimate:
+  read_tokens: 1000
+  total_budget: 5000
+  warning_threshold: 4000
+  status: ok
