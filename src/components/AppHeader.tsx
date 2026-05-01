@@ -11,7 +11,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onBack }) => {
     <View style={styles.container}>
       {onBack && (
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Ionicons name="arrow-back" size={20} color="#1B1F24" />
+          <Ionicons name="arrow-back" size={14} color="#1B1F24" />
         </TouchableOpacity>
       )}
       <View style={[styles.logoBox, onBack && styles.logoBoxWithBack]}>
@@ -23,9 +23,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onBack }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingHorizontal: 8,
+    paddingTop: 4,
+    paddingBottom: 4,
     borderBottomWidth: 2,
     borderBottomColor: '#1B1F24',
     backgroundColor: '#FFFFFF',
@@ -33,21 +33,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButton: {
-    width: 34,
-    height: 34,
-    borderWidth: 2,
+    width: 24,
+    height: 24,
+    borderWidth: 1.5,
     borderColor: '#1B1F24',
-    borderRadius: 17,
-    backgroundColor: '#FFF2B8', // distinct warm background
+    borderRadius: 4,
+    backgroundColor: '#FFF2B8',
     alignItems: 'center',
     justifyContent: 'center',
+    // no extra margin — flush to the left edge of the padded container
   },
   logoBox: {
-    paddingHorizontal: 10,
-    paddingVertical: 2,
-    borderWidth: 2,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderWidth: 1.5,
     borderColor: '#1B1F24',
-    borderRadius: 8,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#EAF3FF',
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   },
   logoText: {
     fontFamily: 'VT323-Regular',
-    fontSize: 22,
+    fontSize: 16,
     color: '#1B1F24',
     letterSpacing: 1,
   },

@@ -65,43 +65,42 @@ This document comprehensively logs all architectural, product, and UX decisions 
 **Decision:** Persistent bottom navigation with three tabs:
 
 - **Left (Quests):** Navigate to Home (main feed)
-- **Center (+):** Navigate to My Quests screen (NOT directly to Create Quest)
-- **Right (Profile):** Navigate to Settings/Profile stub
+- **Center (+):** Navigate directly to Create Quest screen
+- **Right (Profile):** Navigate to Profile screen (Central hub for user management)
 
 **Rationale:**
 
 - Standard mobile navigation pattern.
-- +Create as center tab is visually prominent and thumb-friendly.
-- Routing to My Quests (not CreateQuest) because creating a quest should happen within My Quests context (see My Quests decision below).
+- +Create as center tab is visually prominent and directly initiates the primary action.
+- Routing directly to Create Quest removes unnecessary friction.
+- Profile tab consolidates all user-specific state, aligning with KISS principles.
 
 **Impact:**
 
 - [BottomNav.tsx](../src/components/BottomNav.tsx): three TouchableOpacity tabs with navigation
-- [AppNavigator.tsx](../src/navigation/AppNavigator.tsx): bottom nav mounted on Home, CurrentQuest, Settings, MyQuests screens
-- Navigation flow: center + → MyQuests (not CreateQuest)
+- [AppNavigator.tsx](../src/navigation/AppNavigator.tsx): bottom nav mounted appropriately
+- Navigation flow: center + → CreateQuest
 
 **Status:** ✅ Locked  
 **Owner:** Dustin (BottomNav + navigation wiring)
 
 ---
 
-### 4. My Quests as Separate Screen
+### 4. Profile as Central Hub
 
-**Decision:** My Quests is a dedicated screen (separate route) showing quests created by the current user. Create Quest form is embedded inside My Quests screen, NOT as a separate tab.
+**Decision:** The Profile tab serves as the central hub for user management. It houses a "History" section (past quests as both requester and fulfiller) and "Settings/Identity". The dedicated "My Quests" middle-man screen is eliminated. Active Request is NOT shown here — the persistent pill on the Home screen already handles that.
 
 **Rationale:**
 
-- Separates "quests I posted" from "quests I can claim" (two distinct workflows).
-- Reduces main feed clutter (only available quests shown).
-- Create form inside My Quests maintains context: you're creating your own quest.
-- Prevents accidental navigation away from a partially-filled create form.
+- The persistent pill on Home already surfaces the active request — duplicating it in Profile would be redundant.
+- Consolidates historical user data into one expected location (Profile).
+- Reduces main navigation clutter and simplifies the routing architecture.
 
 **Impact:**
 
-- [AppNavigator.tsx](../src/navigation/AppNavigator.tsx): new MyQuests route
-- [MyQuestsScreen.tsx](../src/screens/MyQuestsScreen.tsx): FlatList of user-created quests + embedded create form toggle
-- [BottomNav.tsx](../src/components/BottomNav.tsx): center + navigates to MyQuests
-- [questStore.tsx](../src/data/questStore.tsx): new listMyQuests(userId) method
+- [AppNavigator.tsx](../src/navigation/AppNavigator.tsx): MyQuests route eliminated/repurposed.
+- [ProfileScreen.tsx](../src/screens/ProfileScreen.tsx): Implements Active Request card and History list.
+- [BottomNav.tsx](../src/components/BottomNav.tsx): Right tab navigates to Profile.
 
 **Status:** ✅ Locked (screen registered; implementation pending)  
 **Owner:** Homer (screen layout) + Dustin (navigation)
@@ -385,7 +384,7 @@ This document comprehensively logs all architectural, product, and UX decisions 
 
 | Role             | Focus               | Screens/Components                                            |
 | ---------------- | ------------------- | ------------------------------------------------------------- |
-| **Homer (Lead)** | Feed + completion   | HomeScreen, CurrentQuestScreen, FilterChips, My Quests layout |
+| **Homer (Lead)** | Feed + completion   | HomeScreen, CurrentQuestScreen, FilterChips, ProfileScreen layout |
 | **Bryce**        | Data layer + states | questStore, mock data, AsyncStorage, urgency logic            |
 | **Dustin**       | Auth + navigation   | Auth screens, BottomNav, AppNavigator, CreateQuestScreen form |
 
@@ -440,10 +439,10 @@ This document comprehensively logs all architectural, product, and UX decisions 
 **Sections Updated:**
 
 - Feature Prioritization: added My Quests, filters, deadline fields
-- Architecture Overview: added 40/60 split, bottom nav, My Quests structure, current quest pill
+- Architecture Overview: added 40/60 split, bottom nav, Profile Hub structure, current quest pill
 - Data Models: added deadline, tags, requesterName, urgency calculation, verification/payment states
-- API Specification: added filter parameters, My Quests methods, urgency/tag logic
-- Feed Behavior Specification: new section covering quest card, current pill, filters, My Quests
+- API Specification: added filter parameters, Profile history methods, urgency/tag logic
+- Feed Behavior Specification: new section covering quest card, current pill, filters, Profile Hub
 - Work Split: updated to reflect Homer/Bryce/Dustin roles
 
 **Status:** ✅ Locked  
@@ -458,7 +457,7 @@ This document comprehensively logs all architectural, product, and UX decisions 
 | May 1, 2026 | 40/60 split layout                 | Homer        | Locked  |
 | May 1, 2026 | Current quest pill                 | Homer        | Locked  |
 | May 1, 2026 | Bottom nav: Quests/+Create/Profile | Dustin       | Locked  |
-| May 1, 2026 | My Quests separate screen          | Homer/Dustin | Locked  |
+| May 1, 2026 | Profile as Central Hub             | Homer/Dustin | Locked  |
 | May 1, 2026 | Quest card content spec            | Homer        | Locked  |
 | May 1, 2026 | Requester attribution format       | Homer/Bryce  | Locked  |
 | May 1, 2026 | Feed filters: Recency+Urgency+Tags | Homer/Bryce  | Locked  |
@@ -486,10 +485,10 @@ This document comprehensively logs all architectural, product, and UX decisions 
 - **Q:** Should selected filters persist across navigation?
 - **A:** TBD. For MVP, reset to defaults on each screen load (simplest).
 
-### Q3: My Quests Create Form: Modal vs. Inline Toggle
+### Q3: Profile Screen Layout
 
-- **Q:** Should Create Quest be a modal overlay or inline toggle?
-- **A:** TBD. Design pass will clarify; recommend inline toggle to keep BottomNav visible.
+- **Q:** How should the active request card look compared to history cards?
+- **A:** TBD. The active request should be prominently styled at the top to indicate its ongoing status.
 
 ### Q4: Tag Display on Card
 

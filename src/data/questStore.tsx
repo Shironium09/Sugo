@@ -3,6 +3,10 @@ import React from 'react';
 export type QuestStatus = 'open' | 'in_progress' | 'resolved';
 export type VerificationStatus = 'not_started' | 'pending' | 'verified';
 export type PaymentStatus = 'not_started' | 'pending' | 'paid';
+export type QuestTag = 'Printing' | 'Food' | 'Queue' | 'Admin' | 'Other';
+export type UrgencyLevel = 'High' | 'Medium' | 'Low' | null;
+
+export const ALL_TAGS: QuestTag[] = ['Printing', 'Food', 'Queue', 'Admin', 'Other'];
 
 export type Quest = {
   id: string;
@@ -18,6 +22,8 @@ export type Quest = {
   requesterConfirmed: boolean;
   verificationStatus: VerificationStatus;
   paymentStatus: PaymentStatus;
+  tags: QuestTag[];
+  deadline: string | null; // ISO string
   createdAt: string;
   updatedAt: string;
 };
@@ -27,6 +33,24 @@ export type CreateQuestInput = {
   description: string;
   location: string;
   rewardPhp: number;
+  tags: QuestTag[];
+  deadline: string | null;
+};
+
+/** Maps time-to-deadline to urgency tier. Returns null if no deadline. */
+export const calculateUrgency = (deadline: string | null): UrgencyLevel => {
+  if (!deadline) return null;
+  const msRemaining = Date.parse(deadline) - Date.now();
+  if (msRemaining <= 0) return 'High';
+  const hoursRemaining = msRemaining / (1000 * 60 * 60);
+  if (hoursRemaining < 1) return 'High';
+  if (hoursRemaining < 4) return 'Medium';
+  return 'Low';
+};
+
+export type FilterState = {
+  sort: 'recency' | 'urgency';
+  tags: QuestTag[];
 };
 
 type QuestStore = {
@@ -35,6 +59,7 @@ type QuestStore = {
   claimQuest: (questId: string) => void;
   markDone: (questId: string) => void;
   confirmResolved: (questId: string) => void;
+  filterQuests: (filters: FilterState) => Quest[];
 };
 
 const QuestStoreContext = React.createContext<QuestStore | undefined>(undefined);
@@ -56,6 +81,8 @@ const seedQuests: Quest[] = [
     requesterConfirmed: false,
     verificationStatus: 'not_started',
     paymentStatus: 'not_started',
+    tags: ['Printing'],
+    deadline: new Date(Date.now() + 1000 * 60 * 45).toISOString(), // 45 min
     createdAt: new Date(Date.now() - 1000 * 60 * 40).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 40).toISOString(),
   },
@@ -73,6 +100,8 @@ const seedQuests: Quest[] = [
     requesterConfirmed: false,
     verificationStatus: 'pending',
     paymentStatus: 'pending',
+    tags: ['Food'],
+    deadline: new Date(Date.now() + 1000 * 60 * 20).toISOString(), // 20 min
     createdAt: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
   },
@@ -90,6 +119,8 @@ const seedQuests: Quest[] = [
     requesterConfirmed: false,
     verificationStatus: 'not_started',
     paymentStatus: 'not_started',
+    tags: ['Admin'],
+    deadline: new Date(Date.now() + 1000 * 60 * 30).toISOString(), // 30 min
     createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
   },
@@ -107,6 +138,8 @@ const seedQuests: Quest[] = [
     requesterConfirmed: false,
     verificationStatus: 'not_started',
     paymentStatus: 'not_started',
+    tags: ['Printing', 'Admin'],
+    deadline: new Date(Date.now() + 1000 * 60 * 180).toISOString(), // 3 hrs
     createdAt: new Date(Date.now() - 1000 * 60 * 55).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 55).toISOString(),
   },
@@ -124,6 +157,8 @@ const seedQuests: Quest[] = [
     requesterConfirmed: false,
     verificationStatus: 'not_started',
     paymentStatus: 'not_started',
+    tags: ['Queue'],
+    deadline: new Date(Date.now() + 1000 * 60 * 300).toISOString(), // 5 hrs
     createdAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
   },
@@ -141,6 +176,8 @@ const seedQuests: Quest[] = [
     requesterConfirmed: false,
     verificationStatus: 'not_started',
     paymentStatus: 'not_started',
+    tags: ['Food'],
+    deadline: null,
     createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
   },
@@ -158,6 +195,8 @@ const seedQuests: Quest[] = [
     requesterConfirmed: false,
     verificationStatus: 'not_started',
     paymentStatus: 'not_started',
+    tags: ['Admin'],
+    deadline: null,
     createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
   },
@@ -175,6 +214,8 @@ const seedQuests: Quest[] = [
     requesterConfirmed: false,
     verificationStatus: 'not_started',
     paymentStatus: 'not_started',
+    tags: ['Other'],
+    deadline: new Date(Date.now() + 1000 * 60 * 50).toISOString(), // 50 min
     createdAt: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
   },
@@ -199,6 +240,8 @@ export const QuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       requesterConfirmed: false,
       verificationStatus: 'not_started',
       paymentStatus: 'not_started',
+      tags: input.tags,
+      deadline: input.deadline,
       createdAt: now,
       updatedAt: now,
     };
@@ -266,9 +309,34 @@ export const QuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     );
   }, []);
 
+  const filterQuests = React.useCallback((filters: FilterState): Quest[] => {
+    const openQuests = quests.filter((q) => q.status === 'open');
+
+    // Apply tag filter
+    const tagFiltered =
+      filters.tags.length === 0
+        ? openQuests
+        : openQuests.filter((q) => filters.tags.some((t) => q.tags.includes(t)));
+
+    // Apply sort
+    if (filters.sort === 'urgency') {
+      const urgencyOrder: Record<string, number> = { High: 0, Medium: 1, Low: 2 };
+      return [...tagFiltered].sort((a, b) => {
+        const ua = calculateUrgency(a.deadline) ?? 'Low';
+        const ub = calculateUrgency(b.deadline) ?? 'Low';
+        const diff = (urgencyOrder[ua] ?? 2) - (urgencyOrder[ub] ?? 2);
+        if (diff !== 0) return diff;
+        return Date.parse(b.createdAt) - Date.parse(a.createdAt);
+      });
+    }
+
+    // Default: recency
+    return [...tagFiltered].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+  }, [quests]);
+
   const value = React.useMemo(
-    () => ({ quests, createQuest, claimQuest, markDone, confirmResolved }),
-    [quests, createQuest, claimQuest, markDone, confirmResolved]
+    () => ({ quests, createQuest, claimQuest, markDone, confirmResolved, filterQuests }),
+    [quests, createQuest, claimQuest, markDone, confirmResolved, filterQuests]
   );
 
   return <QuestStoreContext.Provider value={value}>{children}</QuestStoreContext.Provider>;
