@@ -46,7 +46,7 @@ Finalize feed content and related components so the core quest loop is clear, fa
 ### Phase 3 - Profile Hub
 - Build the Profile screen as a central hub for user management.
 - Add a "History" section for past quests (both as requester and fulfiller).
-- Add basic identity info (name, ID). No active request card needed — the pill already handles that.
+- Add basic identity info (name, ID). No active r   equest card needed — the pill already handles that.
 
 ### Phase 4 - QoL states
 - Empty states for Feed and Profile History.
