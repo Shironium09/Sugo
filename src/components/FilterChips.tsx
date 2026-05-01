@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  Modal,
+  Dimensions,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ALL_TAGS, FilterState, QuestTag } from "../data/questStore";
@@ -16,6 +18,8 @@ type Props = {
 
 export const FilterChips: React.FC<Props> = ({ filters, onChange }) => {
   const [showTags, setShowTags] = useState(false);
+  const [popoverPos, setPopoverPos] = useState({ top: 0, right: 0 });
+  const filterButtonRef = useRef<View>(null);
 
   const toggleSort = () => {
     const nextSort = filters.sort === "recency" ? "urgency" : "recency";
@@ -23,19 +27,40 @@ export const FilterChips: React.FC<Props> = ({ filters, onChange }) => {
   };
 
   const toggleTag = (tag: QuestTag) => {
-    const active = filters.tags.includes(tag);
-    const next = active
+    const isActive = filters.tags.includes(tag);
+    const nextTags = isActive
       ? filters.tags.filter((t) => t !== tag)
       : [...filters.tags, tag];
-    onChange({ ...filters, tags: next });
+    onChange({ ...filters, tags: nextTags });
+  };
+
+  const handleFilterPress = () => {
+    if (!showTags) {
+      // Measure the button's absolute screen position before opening the modal,
+      // so we can position the popover card correctly inside the fullscreen overlay.
+      filterButtonRef.current?.measure((_x, _y, width, height, pageX, pageY) => {
+        const windowWidth = Dimensions.get("window").width;
+        setPopoverPos({
+          top: pageY + height + 8,
+          right: windowWidth - pageX - width,
+        });
+        setShowTags(true);
+      });
+    } else {
+      setShowTags(false);
+    }
   };
 
   const activeTagsCount = filters.tags.length;
 
   return (
-    <View style={[styles.container, { zIndex: 100 }]}>
-      {/* Sort Icon */}
-      <TouchableOpacity style={styles.iconButton} onPress={toggleSort}>
+    <View style={styles.container}>
+      {/* Sort toggle */}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={styles.iconButton}
+        onPress={toggleSort}
+      >
         <Ionicons
           name={filters.sort === "recency" ? "time" : "flash"}
           size={18}
@@ -43,10 +68,12 @@ export const FilterChips: React.FC<Props> = ({ filters, onChange }) => {
         />
       </TouchableOpacity>
 
-      {/* Filter Icon */}
+      {/* Filter opener — ref'd for absolute position measurement */}
       <TouchableOpacity
+        ref={filterButtonRef}
+        activeOpacity={0.7}
         style={styles.iconButton}
-        onPress={() => setShowTags(!showTags)}
+        onPress={handleFilterPress}
       >
         <Ionicons
           name={activeTagsCount > 0 ? "funnel" : "funnel-outline"}
@@ -60,29 +87,51 @@ export const FilterChips: React.FC<Props> = ({ filters, onChange }) => {
         )}
       </TouchableOpacity>
 
-      {/* Floating Tags Popover */}
-      {showTags && (
-        <View style={styles.popoverCard}>
+      {/*
+        Modal-based popover — lifted fully out of the FlatList/sticky header tree.
+        This avoids Android z-index/elevation races and iOS overflow clipping issues.
+        The backdrop Pressable dismisses the popover on tap outside the card.
+      */}
+      <Modal
+        transparent
+        visible={showTags}
+        animationType="none"
+        onRequestClose={() => setShowTags(false)}
+      >
+        <Pressable
+          style={StyleSheet.absoluteFillObject}
+          onPress={() => setShowTags(false)}
+        />
+        <View
+          style={[
+            styles.popoverCard,
+            { top: popoverPos.top, right: popoverPos.right },
+          ]}
+        >
           <View style={styles.popoverNub} />
           <View style={styles.popoverHeader}>
             <Text style={styles.popoverTitle}>Filter by Category</Text>
-            <TouchableOpacity onPress={() => setShowTags(false)}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => setShowTags(false)}
+            >
               <Ionicons name="close" size={20} color="#1B1F24" />
             </TouchableOpacity>
           </View>
           <View style={styles.tagsGrid}>
             {ALL_TAGS.map((tag) => {
-              const active = filters.tags.includes(tag);
+              const isActive = filters.tags.includes(tag);
               return (
                 <TouchableOpacity
                   key={tag}
-                  style={[styles.tagChip, active && styles.tagChipActive]}
+                  activeOpacity={0.7}
+                  style={[styles.tagChip, isActive && styles.tagChipActive]}
                   onPress={() => toggleTag(tag)}
                 >
                   <Text
                     style={[
                       styles.tagChipText,
-                      active && styles.tagChipTextActive,
+                      isActive && styles.tagChipTextActive,
                     ]}
                   >
                     {tag}
@@ -93,6 +142,7 @@ export const FilterChips: React.FC<Props> = ({ filters, onChange }) => {
           </View>
           {activeTagsCount > 0 && (
             <TouchableOpacity
+              activeOpacity={0.7}
               style={styles.clearButton}
               onPress={() => onChange({ ...filters, tags: [] })}
             >
@@ -100,7 +150,7 @@ export const FilterChips: React.FC<Props> = ({ filters, onChange }) => {
             </TouchableOpacity>
           )}
         </View>
-      )}
+      </Modal>
     </View>
   );
 };
@@ -110,12 +160,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    position: "relative",
+    // No position:"relative" or zIndex needed — popover lives in a Modal now
   },
   iconButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40, // bumped from 36 — closer to 44px WCAG touch target
+    height: 40,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: "#1B1F24",
     backgroundColor: "#FFFFFF",
@@ -138,13 +188,12 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontFamily: "PixelifySans-Regular",
-    fontSize: 9,
+    fontSize: 11,
     color: "#1B1F24",
   },
   popoverCard: {
+    // Absolute within the Modal's fullscreen transparent view
     position: "absolute",
-    top: 52,
-    right: 0,
     width: 260,
     backgroundColor: "#FFFFFF",
     borderWidth: 2,
@@ -156,7 +205,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 8,
-    zIndex: 999,
   },
   popoverNub: {
     position: "absolute",
@@ -178,7 +226,7 @@ const styles = StyleSheet.create({
   },
   popoverTitle: {
     fontFamily: "PixelifySans-Regular",
-    fontSize: 14,
+    fontSize: 18,
     color: "#1B1F24",
   },
   tagsGrid: {
@@ -191,7 +239,7 @@ const styles = StyleSheet.create({
     borderColor: "#D0D8E0",
     borderRadius: 16,
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 10, // bumped from 6 — meets ~44px vertical tap area
     backgroundColor: "#FFFFFF",
   },
   tagChipActive: {
@@ -200,16 +248,16 @@ const styles = StyleSheet.create({
   },
   tagChipText: {
     fontFamily: "IBMPlexMono-Regular",
-    fontSize: 11,
+    fontSize: 14,
     color: "#58616B",
   },
   tagChipTextActive: {
     color: "#1B1F24",
   },
   clearButton: {
-    marginTop: 24,
+    marginTop: 16, // normalized from 24 to fit 8px grid
     alignItems: "center",
-    paddingVertical: 6,
+    paddingVertical: 8,
     borderWidth: 2,
     borderColor: "#1B1F24",
     borderRadius: 12,
@@ -217,7 +265,7 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     fontFamily: "PixelifySans-Regular",
-    fontSize: 11,
+    fontSize: 14,
     color: "#1B1F24",
   },
 });

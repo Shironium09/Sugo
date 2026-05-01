@@ -55,6 +55,10 @@ export type FilterState = {
 
 type QuestStore = {
   quests: Quest[];
+  /** The currently in-progress quest claimed by the user, or null if none. */
+  activeQuest: Quest | null;
+  /** True when any quest has status 'in_progress'. Derived from activeQuest. */
+  hasActiveQuest: boolean;
   createQuest: (input: CreateQuestInput) => string;
   claimQuest: (questId: string) => void;
   markDone: (questId: string) => void;
@@ -334,10 +338,19 @@ export const QuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return [...tagFiltered].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
   }, [quests]);
 
-  const value = React.useMemo(
-    () => ({ quests, createQuest, claimQuest, markDone, confirmResolved, filterQuests }),
-    [quests, createQuest, claimQuest, markDone, confirmResolved, filterQuests]
-  );
+  const value = React.useMemo(() => {
+    const activeQuest = quests.find((q) => q.status === 'in_progress') ?? null;
+    return {
+      quests,
+      activeQuest,
+      hasActiveQuest: activeQuest !== null,
+      createQuest,
+      claimQuest,
+      markDone,
+      confirmResolved,
+      filterQuests,
+    };
+  }, [quests, createQuest, claimQuest, markDone, confirmResolved, filterQuests]);
 
   return <QuestStoreContext.Provider value={value}>{children}</QuestStoreContext.Provider>;
 };

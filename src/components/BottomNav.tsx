@@ -16,11 +16,7 @@ type Props = {
 
 export const BottomNav: React.FC<Props> = ({ navigation, active }) => {
   const insets = useSafeAreaInsets();
-  const { quests } = useQuestStore();
-  const hasActiveQuest = React.useMemo(
-    () => quests.some((q) => q.status === 'in_progress'),
-    [quests]
-  );
+  const { hasActiveQuest } = useQuestStore();
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom + 8 }]}>
@@ -96,7 +92,7 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 9,
+    fontSize: 11,
     color: '#1B1F24',
     marginTop: 3,
   },

@@ -180,21 +180,21 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "PixelifySans-Regular",
-    fontSize: 16,
+    fontSize: 24,
     marginBottom: 8,
     color: "#1B1F24",
   },
   subTitle: {
     fontFamily: "IBMPlexMono-Regular",
-    fontSize: 12,
+    fontSize: 14,
     color: "#58616B",
     marginBottom: 12,
   },
   bodyText: {
     fontFamily: "IBMPlexMono-Regular",
-    fontSize: 12,
+    fontSize: 15,
     color: "#1B1F24",
-    lineHeight: 18,
+    lineHeight: 22,
   },
   section: {
     marginTop: 18,
@@ -206,13 +206,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontFamily: "PixelifySans-Regular",
-    fontSize: 10,
+    fontSize: 14,
     marginBottom: 8,
     color: "#1B1F24",
   },
   metaText: {
     fontFamily: "IBMPlexMono-Regular",
-    fontSize: 12,
+    fontSize: 14,
     color: "#58616B",
     marginBottom: 6,
   },
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   },
   stepText: {
     fontFamily: "IBMPlexMono-Regular",
-    fontSize: 12,
+    fontSize: 14,
     color: "#1B1F24",
   },
   actions: {
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   },
   resolvedText: {
     fontFamily: "PixelifySans-Regular",
-    fontSize: 10,
+    fontSize: 14,
     color: "#1B1F24",
   },
   claimLockedNotice: {
@@ -268,9 +268,9 @@ const styles = StyleSheet.create({
   },
   claimLockedText: {
     fontFamily: "IBMPlexMono-Regular",
-    fontSize: 12,
+    fontSize: 14,
     color: "#58616B",
-    lineHeight: 18,
+    lineHeight: 20,
   },
   notFoundWrapper: {
     flex: 1,

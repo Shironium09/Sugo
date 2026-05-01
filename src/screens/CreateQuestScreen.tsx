@@ -10,14 +10,12 @@ import { AppShell } from '../components/AppShell';
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateQuest'>;
 
 export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
-  const { quests, createQuest } = useQuestStore();
+  const { quests, createQuest, activeQuest, hasActiveQuest } = useQuestStore();
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [location, setLocation] = React.useState('');
   const [rewardPhp, setRewardPhp] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
-
-  const hasActiveQuest = quests.some((q) => q.status === 'in_progress');
 
   const handleSubmit = () => {
     setError(null);
@@ -66,6 +64,13 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.lockedText}>
             You must resolve your current quest before you can request a new one. This ensures everyone gets their tasks done!
           </Text>
+          {activeQuest && (
+            <PixelButton
+              title="View Current Quest"
+              onPress={() => navigation.navigate('CurrentQuest', { questId: activeQuest.id })}
+              style={styles.viewQuestButton}
+            />
+          )}
         </View>
       </AppShell>
     );
@@ -126,7 +131,7 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         <PixelButton title="Create Quest" onPress={handleSubmit} />
-        <PixelButton title="Back to Feed" onPress={() => navigation.navigate('Home')} />
+        <PixelButton variant="ghost" title="Back to Feed" onPress={() => navigation.navigate('Home')} />
       </ScrollView>
     </AppShell>
   );
@@ -145,7 +150,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 16,
+    fontSize: 24, // bumped from 16 — clear dominance over label (12) and input (12)
     marginBottom: 20,
     color: '#1B1F24',
   },
@@ -154,7 +159,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 10,
+    fontSize: 14, // raised from 12
     marginBottom: 8,
     color: '#1B1F24',
   },
@@ -165,7 +170,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 12,
+    fontSize: 16,
     color: '#1B1F24',
     backgroundColor: '#FFFFFF',
   },
@@ -177,7 +182,7 @@ const styles = StyleSheet.create({
     fontFamily: 'IBMPlexMono-Regular',
     color: '#B42318',
     marginBottom: 12,
-    fontSize: 12,
+    fontSize: 14,
   },
   lockedContainer: {
     flex: 1,
@@ -185,18 +190,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 32,
   },
+  viewQuestButton: {
+    marginTop: 24,
+    alignSelf: 'stretch',
+  },
   lockedTitle: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 20,
+    fontSize: 24,
     color: '#1B1F24',
     marginBottom: 12,
     textAlign: 'center',
   },
   lockedText: {
     fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 14,
+    fontSize: 16,
     color: '#58616B',
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 24,
   },
 });

@@ -20,6 +20,14 @@ const statusColor: Record<Quest['status'], string> = {
   resolved: '#F0F0F0',
 };
 
+// Explicit map avoids the silent-failure pattern of styles[`urgency${urgency}`]
+// If a new UrgencyLevel is ever added, TS will flag this as incomplete.
+const urgencyStyles = {
+  High: { backgroundColor: '#FFD0D0' },
+  Medium: { backgroundColor: '#FFF2B8' },
+  Low: { backgroundColor: '#E3F7F0' },
+} as const;
+
 export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { filterQuests } = useQuestStore();
   const [filters, setFilters] = React.useState<FilterState>({ sort: 'recency', tags: [] });
@@ -56,7 +64,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.cardTitle}>{item.title}</Text>
             <View style={styles.badges}>
               {urgency && (
-                <View style={[styles.urgencyPill, styles[`urgency${urgency}` as keyof typeof styles]]}>
+                <View style={[styles.urgencyPill, urgencyStyles[urgency]]}>
                   <Text style={styles.urgencyText}>{urgency}</Text>
                 </View>
               )}
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
   },
   mapLabel: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 11,
+    fontSize: 14,
     color: '#1B1F24',
     textAlign: 'center',
   },
@@ -158,7 +166,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 18,
+    fontSize: 24,
     color: '#1B1F24',
   },
   emptyState: {
@@ -170,13 +178,13 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 13,
+    fontSize: 18,
     marginBottom: 8,
     color: '#1B1F24',
   },
   emptyBody: {
     fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 13,
+    fontSize: 14,
     color: '#58616B',
   },
   card: {
@@ -195,7 +203,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 13,
+    fontSize: 18,
     flex: 1,
     marginRight: 8,
     color: '#1B1F24',
@@ -217,7 +225,7 @@ const styles = StyleSheet.create({
   urgencyLow: { backgroundColor: '#E3F7F0' },
   urgencyText: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 9,
+    fontSize: 11,
     color: '#1B1F24',
   },
   statusPill: {
@@ -229,26 +237,26 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 9,
+    fontSize: 11,
     color: '#1B1F24',
   },
   metaText: {
     fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 13,
+    fontSize: 14,
     color: '#58616B',
     marginBottom: 6,
   },
   requesterText: {
     fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 12,
+    fontSize: 13,
     color: '#7A8793',
     marginBottom: 6,
   },
   teaserText: {
     fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 13,
+    fontSize: 14,
     color: '#1B1F24',
-    lineHeight: 20,
+    lineHeight: 22,
     marginBottom: 8,
   },
   tagRow: {
@@ -267,7 +275,7 @@ const styles = StyleSheet.create({
   },
   tagBadgeText: {
     fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 10,
+    fontSize: 11,
     color: '#3A5070',
   },
 });

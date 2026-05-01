@@ -10,8 +10,12 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onBack }) => {
   return (
     <View style={styles.container}>
       {onBack && (
-        <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Ionicons name="arrow-back" size={14} color="#1B1F24" />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={onBack}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Ionicons name="arrow-back" size={16} color="#1B1F24" />
         </TouchableOpacity>
       )}
       <View style={[styles.logoBox, onBack && styles.logoBoxWithBack]}>
@@ -33,15 +37,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButton: {
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
     borderWidth: 1.5,
     borderColor: '#1B1F24',
-    borderRadius: 4,
+    borderRadius: 6,
     backgroundColor: '#FFF2B8',
     alignItems: 'center',
     justifyContent: 'center',
-    // no extra margin — flush to the left edge of the padded container
+    // hitSlop provides extra 8px tap area on all sides
   },
   logoBox: {
     paddingHorizontal: 6,
@@ -59,7 +63,7 @@ const styles = StyleSheet.create({
   },
   logoText: {
     fontFamily: 'VT323-Regular',
-    fontSize: 16,
+    fontSize: 24,
     color: '#1B1F24',
     letterSpacing: 1,
   },
