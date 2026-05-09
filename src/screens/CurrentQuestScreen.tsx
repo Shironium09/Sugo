@@ -161,21 +161,19 @@ export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
               </View>
             ) : (
               <PixelButton
-                title={
-                  loadingAction === "claim" ? "Claiming..." : "Claim Quest"
-                }
+                title="Claim Quest"
+                loading={loadingAction === "claim"}
                 onPress={() =>
                   handleAction("claim", () => claimQuest(quest.id))
                 }
-                disabled={loadingAction !== null}
               />
             ))}
 
           {quest.status === "in_progress" && !quest.fulfillerDone && (
             <PixelButton
-              title={loadingAction === "markDone" ? "Updating..." : "Mark Done"}
+              title="Mark Done"
+              loading={loadingAction === "markDone"}
               onPress={() => handleAction("markDone", () => markDone(quest.id))}
-              disabled={loadingAction !== null}
             />
           )}
 
@@ -183,15 +181,11 @@ export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
             quest.fulfillerDone &&
             !quest.requesterConfirmed && (
               <PixelButton
-                title={
-                  loadingAction === "confirm"
-                    ? "Confirming..."
-                    : "Confirm Resolved"
-                }
+                title="Confirm Resolved"
+                loading={loadingAction === "confirm"}
                 onPress={() =>
                   handleAction("confirm", () => confirmResolved(quest.id))
                 }
-                disabled={loadingAction !== null}
               />
             )}
 
