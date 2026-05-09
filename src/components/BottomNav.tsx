@@ -19,7 +19,7 @@ export const BottomNav: React.FC<Props> = ({ navigation, active }) => {
   const { hasActiveQuest } = useQuestStore();
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom + 8 }]}>
+    <View style={[styles.container, { paddingBottom: insets.bottom + 2 }]}>
       <TouchableOpacity
         style={styles.navItem}
         onPress={() => navigation.navigate('Home')}
@@ -60,11 +60,14 @@ export const BottomNav: React.FC<Props> = ({ navigation, active }) => {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute', // Ensures it stays at the bottom
+    bottom: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingTop: 8, // Increased slightly for breathing room
     borderTopWidth: 2,
     borderTopColor: colors.ink,
     backgroundColor: colors.surface,
@@ -72,16 +75,16 @@ const styles = StyleSheet.create({
   navItem: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 4,
+    paddingVertical: 2,
     paddingHorizontal: 16,
     minWidth: 64,
   },
   navItemCenter: {
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
     borderWidth: 2,
     borderColor: colors.ink,
-    borderRadius: 24,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.surfaceBlue,
