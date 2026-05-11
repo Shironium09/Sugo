@@ -6,6 +6,7 @@ import { FilterState, Quest, useQuestStore } from '../data/questStore';
 import { AppShell } from '../components/AppShell';
 import { FilterChips } from '../components/FilterChips';
 import { QuestCard } from '../components/QuestCard';
+import { CampusMap } from '../components/CampusMap';
 import { styles } from './HomeScreen.styles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -58,9 +59,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     <AppShell navigation={navigation} active="Home">
       <View style={styles.content}>
         <View style={styles.mapPanel}>
-          <View style={styles.mapSurface}>
-            <Text style={styles.mapLabel}>Minimal Campus Map (Mock)</Text>
-          </View>
+          <CampusMap />
         </View>
         <View style={styles.listPanel}>
           <FlatList<Quest>
