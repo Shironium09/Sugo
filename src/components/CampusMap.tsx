@@ -43,7 +43,7 @@ export const MARKERS: MapMarkerData[] = [
   {
     id: 'marker-4',
     x: 50,
-    y: 70,
+    y: 60,
     label: 'SMED Building',
     onPress: () => {
       // TODO: connect to quest detail navigation
