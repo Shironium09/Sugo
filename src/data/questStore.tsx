@@ -8,6 +8,16 @@ export type UrgencyLevel = 'High' | 'Medium' | 'Low' | null;
 
 export const ALL_TAGS: QuestTag[] = ['Printing', 'Food', 'Queue', 'Admin', 'Other'];
 
+export const CAMPUS_LOCATIONS = [
+  'Bunzel Building',
+  'SMED Building',
+  'PE Building',
+  'RH Building',
+  'MR Building',
+  'SAFAD',
+  'JB Library',
+] as const;
+
 export type Quest = {
   id: string;
   title: string;

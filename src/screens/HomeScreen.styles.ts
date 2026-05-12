@@ -168,4 +168,28 @@ export const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.inkTag,
   },
+  locationFilterTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.accentMint,
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginRight: 8,
+  },
+  locationFilterText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 12,
+    color: colors.ink,
+  },
+  clearFilter: {
+    fontFamily: 'IBMPlexMono-Regular',
+    fontSize: 13,
+    color: colors.accent,
+    marginTop: 10,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
 });

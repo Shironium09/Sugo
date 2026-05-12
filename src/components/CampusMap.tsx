@@ -24,27 +24,63 @@ export interface MapMarkerData {
 export const MARKERS: MapMarkerData[] = [
   {
     id: 'marker-1',
-    x: 30,
-    y: 40,
-    label: 'Main Building',
+    x: 28,
+    y: 85,
+    label: 'Bunzel Building',
     onPress: () => {
       // TODO: connect to quest detail navigation
     },
   },
   {
     id: 'marker-2',
-    x: 65,
-    y: 25,
-    label: 'Library',
+    x: 45,
+    y: 17,
+    label: 'JB Library',
     onPress: () => {
       // TODO: connect to quest detail navigation
     },
   },
   {
-    id: 'marker-3',
+    id: 'marker-4',
     x: 50,
     y: 70,
-    label: 'Cafeteria',
+    label: 'SMED Building',
+    onPress: () => {
+      // TODO: connect to quest detail navigation
+    },
+  },
+  {
+    id: 'marker-5',
+    x: 60,
+    y: 25,
+    label: 'RH Building',
+    onPress: () => {
+      // TODO: connect to quest detail navigation
+    },
+  },
+  {
+    id: 'marker-6',
+    x: 35,
+    y: 45,
+    label: 'SAFAD',
+    onPress: () => {
+      // TODO: connect to quest detail navigation
+    },
+  },
+  {
+    id: 'marker-7',
+    x: 33,
+    y: 30,
+    label: 'MR Building',
+    onPress: () => {
+      // TODO: connect to quest detail navigation
+    },
+  },
+  {
+    id: 'marker-8',
+    x: 58,
+    y: 35,
+    label: 'PE Building',
     onPress: () => {
       // TODO: connect to quest detail navigation
     },
@@ -59,9 +95,10 @@ const MAX_SCALE = 5;
 // ─── Marker ────────────────────────────────────────────────────────────────────────
 interface MapMarkerProps {
   marker: MapMarkerData;
+  onPress?: (label: string) => void;
 }
 
-const MapMarker: React.FC<MapMarkerProps> = ({ marker }) => {
+const MapMarker: React.FC<MapMarkerProps> = ({ marker, onPress }) => {
   return (
     <TouchableOpacity
       style={[
@@ -71,8 +108,8 @@ const MapMarker: React.FC<MapMarkerProps> = ({ marker }) => {
           top: `${marker.y}%`,
         },
       ]}
-      onPress={marker.onPress}
-      disabled={!marker.onPress}
+      onPress={() => onPress?.(marker.label)}
+      disabled={!onPress}
       activeOpacity={0.7}
     >
       <View style={styles.markerDot} />
@@ -84,9 +121,10 @@ const MapMarker: React.FC<MapMarkerProps> = ({ marker }) => {
 // ─── CampusMap ─────────────────────────────────────────────────────────────────
 interface CampusMapProps {
   markers?: MapMarkerData[];
+  onMarkerPress?: (location: string) => void;
 }
 
-export const CampusMap: React.FC<CampusMapProps> = ({ markers = MARKERS }) => {
+export const CampusMap: React.FC<CampusMapProps> = ({ markers = MARKERS, onMarkerPress }) => {
   const scaleValue = React.useRef(new Animated.Value(DEFAULT_SCALE)).current;
   const translateXValue = React.useRef(new Animated.Value(0)).current;
   const translateYValue = React.useRef(new Animated.Value(0)).current;
@@ -211,7 +249,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({ markers = MARKERS }) => {
           resizeMode="contain"
         />
         {markers.map((marker) => (
-          <MapMarker key={marker.id} marker={marker} />
+          <MapMarker key={marker.id} marker={marker} onPress={onMarkerPress} />
         ))}
       </Animated.View>
     </View>

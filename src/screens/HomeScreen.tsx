@@ -14,6 +14,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { filterQuests } = useQuestStore();
   const [filters, setFilters] = React.useState<FilterState>({ sort: 'recency', tags: [] });
+  const [locationFilter, setLocationFilter] = React.useState<string | null>(null);
   const [sortedQuests, setSortedQuests] = React.useState<Quest[]>([]);
   const [loading, setLoading] = React.useState(true);
 
@@ -22,26 +23,35 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     setLoading(true);
     filterQuests(filters).then(data => {
       if (mounted) {
-        setSortedQuests(data);
+        setSortedQuests(locationFilter ? data.filter(q => q.location === locationFilter) : data);
         setLoading(false);
       }
     });
     return () => {
       mounted = false;
     };
-  }, [filters, filterQuests]);
+  }, [filters, filterQuests, locationFilter]);
 
   const renderHeader = () => (
     <View style={styles.header}>
       <Text style={styles.title}>Available Quests</Text>
+      {locationFilter && (
+        <View style={styles.locationFilterTag}>
+          <Text style={styles.locationFilterText}>{locationFilter}</Text>
+          <Text style={styles.clearFilter} onPress={() => setLocationFilter(null)}> x</Text>
+        </View>
+      )}
       <FilterChips filters={filters} onChange={setFilters} />
     </View>
   );
 
   const renderEmpty = () => (
     <View style={styles.emptyState}>
-      <Text style={styles.emptyTitle}>No quests yet</Text>
-      <Text style={styles.emptyBody}>Create the first quest to start the feed.</Text>
+      <Text style={styles.emptyTitle}>{locationFilter ? `No quests at ${locationFilter}` : 'No quests yet'}</Text>
+      <Text style={styles.emptyBody}>{locationFilter ? 'Try another location or clear the filter.' : 'Create the first quest to start the feed.'}</Text>
+      {locationFilter && (
+        <Text style={styles.clearFilter} onPress={() => setLocationFilter(null)}>Clear filter</Text>
+      )}
     </View>
   );
 
@@ -59,7 +69,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     <AppShell navigation={navigation} active="Home">
       <View style={styles.content}>
         <View style={styles.mapPanel}>
-          <CampusMap />
+          <CampusMap onMarkerPress={(location) => setLocationFilter(prev => prev === location ? null : location)} />
         </View>
         <View style={styles.listPanel}>
           <FlatList<Quest>

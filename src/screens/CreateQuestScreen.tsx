@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { PixelButton } from '../components/PixelButton';
+import { LocationPicker } from '../components/LocationPicker';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useQuestStore } from '../data/questStore';
 import { AppShell } from '../components/AppShell';
@@ -11,7 +12,7 @@ import { styles } from './CreateQuestScreen.styles';
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateQuest'>;
 
 export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
-  const { quests, createQuest, activeQuest, hasActiveQuest } = useQuestStore();
+  const { createQuest, activeQuest, hasActiveQuest } = useQuestStore();
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [location, setLocation] = React.useState('');
@@ -31,7 +32,7 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    if (!location.trim()) {
+    if (!location) {
       setError('Location is required.');
       return;
     }
@@ -47,7 +48,7 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
       const newId = await createQuest({
         title: title.trim(),
         description: description.trim(),
-        location: location.trim(),
+        location,
         rewardPhp: rewardValue,
         tags: [],
         deadline: null,
@@ -118,13 +119,7 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
 
         <View style={styles.fieldGroup}>
           <Text style={styles.label}>Location</Text>
-          <TextInput
-            value={location}
-            onChangeText={setLocation}
-            placeholder="Main Library"
-            placeholderTextColor="#7A8793"
-            style={styles.input}
-          />
+          <LocationPicker value={location} onChange={setLocation} />
         </View>
 
         <View style={styles.fieldGroup}>
