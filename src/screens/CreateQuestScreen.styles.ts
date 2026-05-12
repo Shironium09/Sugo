@@ -28,8 +28,8 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   questIconImg: {
-    width: 48,
-    height: 48,
+    width: 80,
+    height: 80,
   },
   title: {
     fontFamily: 'PixelifySans-Regular',
@@ -66,8 +66,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   locationPinImg: {
-    width: 24,
-    height: 24,
+    width: 40,
+    height: 40,
     marginLeft: 8,
   },
   errorText: {

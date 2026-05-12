@@ -116,7 +116,7 @@ export const SearchProfileHeader: React.FC<SearchProfileHeaderProps> = ({
           resizeMode="cover"
         />
         <View style={navStyles.profileInfo}>
-          <Text style={navStyles.profileName}>AVRYL ARR.</Text>
+          <Text style={navStyles.profileName}>JOHN DOE.</Text>
           <Text style={navStyles.profileExp}>EXP: 2769</Text>
         </View>
       </View>
@@ -143,13 +143,12 @@ const navStyles = StyleSheet.create({
     minWidth: 60,
   },
   navIconImg: {
-    width: 24,
-    height: 24,
+    width: 40,
+    height: 40,
     marginBottom: 2,
-    tintColor: colors.ink,
   },
   navIconImgActive: {
-    tintColor: '#7ED9B8',
+    opacity: 0.5,
   },
   navLabel: {
     fontFamily: 'PixelifySans-Regular',
@@ -182,10 +181,9 @@ const navStyles = StyleSheet.create({
     paddingVertical: 0,
   },
   searchIconImg: {
-    width: 20,
-    height: 20,
+    width: 32,
+    height: 32,
     marginLeft: 8,
-    tintColor: colors.ink,
   },
   profileSection: {
     flexDirection: 'row',

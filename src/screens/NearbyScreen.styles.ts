@@ -75,10 +75,10 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   nearbyIconImg: {
-    width: 20,
-    height: 20,
+    width: 36,
+    height: 36,
     marginRight: 10,
-    marginTop: 2,
+    marginTop: 0,
   },
   nearbyText: {
     fontFamily: 'PixelifySans-Regular',

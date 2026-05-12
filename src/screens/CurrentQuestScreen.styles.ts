@@ -27,8 +27,8 @@ export const styles = StyleSheet.create({
     color: '#5CC6D0',
   },
   questIconImg: {
-    width: 28,
-    height: 28,
+    width: 56,
+    height: 56,
   },
   // Map section
   mapContainer: {

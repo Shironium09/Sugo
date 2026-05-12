@@ -31,8 +31,8 @@ export const styles = StyleSheet.create({
     gap: 12,
   },
   actionIconImg: {
-    width: 28,
-    height: 28,
+    width: 56,
+    height: 56,
   },
   actionText: {
     fontFamily: 'PixelifySans-Regular',
@@ -69,10 +69,10 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   historyIconImg: {
-    width: 20,
-    height: 20,
+    width: 36,
+    height: 36,
     marginRight: 10,
-    marginTop: 2,
+    marginTop: 0,
   },
   historyText: {
     fontFamily: 'PixelifySans-Regular',

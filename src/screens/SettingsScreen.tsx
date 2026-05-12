@@ -17,8 +17,8 @@ import { styles } from './SettingsScreen.styles';
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
 const MOCK_USER = {
-  name: 'AVRYL ARR.',
-  email: 'avryl@usc.edu.ph',
+  name: 'JOHN DOE.',
+  email: '240001234@usc.edu.ph',
   id: '240001234',
   exp: 2769,
   questsCompleted: 12,
@@ -91,7 +91,7 @@ export const SettingsScreen: React.FC<Props> = ({ navigation }) => {
               <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
-              <Text style={styles.menuIcon}>🔒</Text>
+              <Image source={require('../assets/pixel_icon_list_1778609134999.png')} style={styles.menuIconImg} resizeMode="contain" />
               <Text style={styles.menuText}>CHANGE PASSWORD</Text>
               <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
             </TouchableOpacity>
@@ -99,7 +99,7 @@ export const SettingsScreen: React.FC<Props> = ({ navigation }) => {
               style={[styles.menuItem, styles.menuItemLast]}
               activeOpacity={0.7}
             >
-              <Text style={styles.menuIcon}>📱</Text>
+              <Image source={require('../assets/pixel_icon_search_1778609165442.png')} style={styles.menuIconImg} resizeMode="contain" />
               <Text style={styles.menuText}>VERIFICATION</Text>
               <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
             </TouchableOpacity>
@@ -135,7 +135,7 @@ export const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.sectionTitle}>MORE</Text>
           <View style={styles.menuCard}>
             <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
-              <Text style={styles.menuIcon}>❓</Text>
+              <Image source={require('../assets/pixel_icon_book_1778609189899.png')} style={styles.menuIconImg} resizeMode="contain" />
               <Text style={styles.menuText}>HELP & SUPPORT</Text>
               <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
             </TouchableOpacity>
@@ -148,7 +148,7 @@ export const SettingsScreen: React.FC<Props> = ({ navigation }) => {
               style={[styles.menuItem, styles.menuItemLast]}
               activeOpacity={0.7}
             >
-              <Text style={styles.menuIcon}>ℹ️</Text>
+              <Image source={require('../assets/pixel_icon_exclamation_1778609201873.png')} style={styles.menuIconImg} resizeMode="contain" />
               <Text style={styles.menuText}>ABOUT SUGO</Text>
               <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
             </TouchableOpacity>

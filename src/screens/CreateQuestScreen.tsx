@@ -50,7 +50,7 @@ export const CreateQuestScreen: React.FC<Props> = ({ navigation }) => {
 
     // Create the quest and add to available quests
     createQuest({
-      requester: 'AVRYL ARR.',
+      requester: 'JOHN DOE.',
       request: quest.trim().toUpperCase(),
       description: description.trim(),
       location: location.trim().toUpperCase(),
