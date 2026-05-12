@@ -1,0 +1,125 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#7BC8E8',
+  },
+  safeArea: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 32,
+    justifyContent: 'space-between',
+  },
+  topSection: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    paddingTop: 8,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+  },
+  backArrow: {
+    width: 36,
+    height: 36,
+  },
+  envelopeContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  envelopeIcon: {
+    width: 80,
+    height: 80,
+  },
+  title: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 32,
+    color: '#1B1F24',
+    textAlign: 'center',
+    marginBottom: 16,
+    lineHeight: 40,
+  },
+  description: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 14,
+    color: '#1B1F24',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 32,
+    paddingHorizontal: 8,
+  },
+  codeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 12,
+    marginBottom: 32,
+  },
+  codeInput: {
+    width: 60,
+    height: 60,
+    borderWidth: 2,
+    borderColor: '#1B1F24',
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 28,
+    color: '#1B1F24',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
+  resendContainer: {
+    alignItems: 'center',
+  },
+  resendText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 13,
+    color: '#1B1F24',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  resendLink: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 13,
+    color: '#1B1F24',
+    textDecorationLine: 'underline',
+  },
+  switchText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 13,
+    color: '#1B1F24',
+    textAlign: 'center',
+    marginTop: 4,
+    lineHeight: 22,
+  },
+  switchLink: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 13,
+    color: '#1B1F24',
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+  },
+  bottomSection: {
+    alignItems: 'center',
+    paddingBottom: 40,
+  },
+  proceedButton: {
+    borderWidth: 2,
+    borderColor: '#1B1F24',
+    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 48,
+    backgroundColor: 'transparent',
+  },
+  proceedButtonText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 16,
+    color: '#1B1F24',
+    textAlign: 'center',
+  },
+});

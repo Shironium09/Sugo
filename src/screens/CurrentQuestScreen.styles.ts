@@ -2,113 +2,242 @@ import { StyleSheet } from 'react-native';
 import { colors } from '../theme/colors';
 
 export const styles = StyleSheet.create({
-  content: {
-    padding: 20,
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
-  title: {
-    fontFamily: 'PixelifySans-Regular',
-    fontSize: 24,
-    marginBottom: 8,
-    color: colors.ink,
+  safeArea: {
+    flex: 1,
   },
-  subTitle: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 14,
-    color: colors.inkMuted,
-    marginBottom: 12,
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 16,
   },
-  bodyText: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 15,
-    color: colors.ink,
-    lineHeight: 22,
-  },
-  section: {
-    marginTop: 18,
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: colors.ink,
-    backgroundColor: colors.surface,
-  },
-  sectionTitle: {
-    fontFamily: 'PixelifySans-Regular',
-    fontSize: 14,
-    marginBottom: 8,
-    color: colors.ink,
-  },
-  metaText: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 14,
-    color: colors.inkMuted,
-    marginBottom: 6,
-  },
-  stepRow: {
+  questInfoHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    justifyContent: 'center',
+    marginBottom: 12,
+    marginTop: 4,
+    gap: 8,
   },
-  stepDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+  questInfoHeader: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 26,
+    color: '#5CC6D0',
+  },
+  questIconImg: {
+    width: 28,
+    height: 28,
+  },
+  // Map section
+  mapContainer: {
+    marginHorizontal: 20,
+    marginBottom: 20,
     borderWidth: 2,
     borderColor: colors.ink,
-    marginRight: 8,
+    borderRadius: 16,
+    overflow: 'hidden',
+    height: 200,
+    position: 'relative',
   },
-  stepDotDone: {
-    backgroundColor: colors.ink,
+  mapImage: {
+    width: '100%',
+    height: '100%',
   },
-  stepDotPending: {
-    backgroundColor: colors.surface,
-  },
-  stepText: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 14,
-    color: colors.ink,
-  },
-  actions: {
-    marginTop: 18,
-    marginBottom: 8,
-  },
-  resolvedBadge: {
+  mapExpandButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 28,
+    height: 28,
+    backgroundColor: 'rgba(255,255,255,0.85)',
     borderWidth: 2,
     borderColor: colors.ink,
-    borderRadius: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    backgroundColor: colors.accentMint,
+    borderRadius: 4,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  resolvedText: {
+  mapExpandIcon: {
     fontFamily: 'PixelifySans-Regular',
     fontSize: 14,
     color: colors.ink,
   },
-  claimLockedNotice: {
+  // Requester section
+  sectionLabel: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 22,
+    color: '#5CC6D0',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  requesterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+    gap: 10,
+  },
+  requesterAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  requesterName: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 20,
+    color: colors.ink,
+  },
+  detailValue: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 22,
+    color: colors.ink,
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  // Quest Info standalone (from Nearby)
+  questInfoContainer: {
+    flex: 1,
+    backgroundColor: '#7BC8E8',
+  },
+  questInfoSafeArea: {
+    flex: 1,
+  },
+  questInfoContent: {
+    flexGrow: 1,
+    paddingHorizontal: 32,
+    justifyContent: 'space-between',
+  },
+  questInfoTopSection: {
+    flex: 1,
+    paddingTop: 16,
+  },
+  questInfoIcon: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  questInfoTitle: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 28,
+    color: colors.ink,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  questInfoMapContainer: {
     borderWidth: 2,
     borderColor: colors.ink,
-    borderRadius: 12,
+    borderRadius: 16,
+    overflow: 'hidden',
+    height: 180,
+    marginBottom: 20,
+    position: 'relative',
+  },
+  questInfoRequesterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+    gap: 10,
+  },
+  questInfoRequesterAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+  },
+  questInfoRequesterName: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 18,
+    color: colors.ink,
+  },
+  questInfoDetail: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 20,
+    color: colors.ink,
+    textAlign: 'center',
+    marginBottom: 4,
+    lineHeight: 28,
+  },
+  questInfoDetailBold: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 20,
+    color: colors.ink,
+    textAlign: 'center',
+    marginBottom: 8,
+    lineHeight: 28,
+  },
+  acceptButton: {
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 20,
     paddingVertical: 12,
-    paddingHorizontal: 14,
-    backgroundColor: colors.warning,
+    paddingHorizontal: 48,
+    backgroundColor: 'transparent',
   },
-  claimLockedText: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 14,
-    color: colors.inkMuted,
-    lineHeight: 20,
+  acceptButtonText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 16,
+    color: colors.ink,
+    textAlign: 'center',
   },
+  // Empty state
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  emptyText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 28,
+    color: colors.ink,
+    textAlign: 'center',
+    lineHeight: 38,
+    marginBottom: 32,
+  },
+  findButton: {
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 48,
+    backgroundColor: 'transparent',
+  },
+  findButtonText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 16,
+    color: colors.ink,
+    textAlign: 'center',
+  },
+  bottomSection: {
+    alignItems: 'center',
+    paddingBottom: 16,
+    paddingTop: 16,
+  },
+  // Not found
   notFoundWrapper: {
     flex: 1,
-    paddingTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
   },
-  notFoundCard: {
-    padding: 20,
-    margin: 20,
-    borderRadius: 12,
+  notFoundText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 20,
+    color: colors.ink,
+    textAlign: 'center',
+  },
+  completeButton: {
     borderWidth: 2,
     borderColor: colors.ink,
-    backgroundColor: colors.surface,
+    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 48,
+    backgroundColor: '#7ED9B8',
+  },
+  completeButtonText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 16,
+    color: colors.ink,
+    textAlign: 'center',
   },
 });

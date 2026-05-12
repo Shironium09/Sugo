@@ -1,91 +1,171 @@
-import React from 'react';
-import { View, Text, SectionList, TouchableOpacity } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { Quest, useQuestStore } from '../data/questStore';
-import { AppShell } from '../components/AppShell';
-import { QuestCard } from '../components/QuestCard';
+import { PixelBottomNav, SearchProfileHeader } from '../components/PixelBottomNav';
+import { useSugo } from '../context/SugoContext';
 import { styles } from './SettingsScreen.styles';
 
-type Props = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Settings'>;
-};
+type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
 const MOCK_USER = {
-  name: 'You',
-  id: '240000000',
-  email: 'you@usc.edu.ph',
+  name: 'AVRYL ARR.',
+  email: 'avryl@usc.edu.ph',
+  id: '240001234',
+  exp: 2769,
+  questsCompleted: 12,
+  questsPosted: 8,
+  rating: 4.8,
 };
 
 export const SettingsScreen: React.FC<Props> = ({ navigation }) => {
-  const { quests } = useQuestStore();
+  const [searchQuery, setSearchQuery] = useState('');
+  const { history } = useSugo();
 
-  // Quests this user posted (resolved only = history)
-  const myPostedHistory = React.useMemo(
-    () => quests.filter((q) => q.requesterId === MOCK_USER.id && q.status === 'resolved'),
-    [quests]
-  );
-
-  // Quests this user fulfilled (resolved only = history)
-  const myFulfilledHistory = React.useMemo(
-    () => quests.filter((q) => q.fulfillerName === MOCK_USER.name && q.status === 'resolved'),
-    [quests]
-  );
-
-  const historyData: { title: string; data: Quest[] }[] = [
-    { title: 'Quests I Posted', data: myPostedHistory },
-    { title: 'Quests I Fulfilled', data: myFulfilledHistory },
-  ];
-
-  const renderQuestCard = ({ item }: { item: Quest }) => (
-    <QuestCard
-      quest={item}
-      onPress={() => navigation.navigate('CurrentQuest', { questId: item.id })}
-      compact
-    />
-  );
+  const recentHistory = history.slice(0, 5);
 
   return (
-    <AppShell navigation={navigation} active="Settings" hideOverlay>
-      <SectionList
-        sections={historyData}
-        keyExtractor={(item) => item.id}
-        renderItem={renderQuestCard}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.sectionTitle}>{title}</Text>
-        )}
-        renderSectionFooter={({ section: { data } }) => (
-          <View style={styles.section}>
-            {data.length === 0 && (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyText}>Nothing here yet.</Text>
-              </View>
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+      <SafeAreaView style={styles.safeArea}>
+        <SearchProfileHeader
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Profile Card */}
+          <View style={styles.profileCard}>
+            <View style={styles.avatarContainer}>
+              <Image
+                source={require('../assets/pixel_avatar.png')}
+                style={styles.avatarImage}
+                resizeMode="cover"
+              />
+            </View>
+            <Text style={styles.profileName}>{MOCK_USER.name}</Text>
+            <Text style={styles.profileEmail}>{MOCK_USER.email}</Text>
+            <Text style={styles.profileId}>ID: {MOCK_USER.id}</Text>
+          </View>
+
+          {/* Stats Row */}
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{MOCK_USER.exp}</Text>
+              <Text style={styles.statLabel}>EXP</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{MOCK_USER.questsCompleted}</Text>
+              <Text style={styles.statLabel}>COMPLETED</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{MOCK_USER.questsPosted}</Text>
+              <Text style={styles.statLabel}>POSTED</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{MOCK_USER.rating}</Text>
+              <Text style={styles.statLabel}>RATING</Text>
+            </View>
+          </View>
+
+          {/* Menu - Account */}
+          <Text style={styles.sectionTitle}>ACCOUNT</Text>
+          <View style={styles.menuCard}>
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
+              <Image source={require('../assets/pixel_icon_person_1778609151153.png')} style={styles.menuIconImg} resizeMode="contain" />
+              <Text style={styles.menuText}>EDIT PROFILE</Text>
+              <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
+              <Text style={styles.menuIcon}>🔒</Text>
+              <Text style={styles.menuText}>CHANGE PASSWORD</Text>
+              <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.menuItem, styles.menuItemLast]}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.menuIcon}>📱</Text>
+              <Text style={styles.menuText}>VERIFICATION</Text>
+              <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Menu - Activity */}
+          <Text style={styles.sectionTitle}>ACTIVITY</Text>
+          <View style={styles.menuCard}>
+            <View style={{ paddingTop: 12 }}>
+              <Text style={styles.historyTitle}>RECENT ACTIVITY</Text>
+            </View>
+            {recentHistory.length === 0 ? (
+              <Text style={styles.emptyText}>NO ACTIVITY YET</Text>
+            ) : (
+              recentHistory.map((item, index) => (
+                <View
+                  key={item.id}
+                  style={[
+                    styles.historyItem,
+                    index === recentHistory.length - 1 && styles.historyItemLast,
+                  ]}
+                >
+                  <Image source={require('../assets/pixel_icon_timer_1778609217507.png')} style={styles.historyIconImg} resizeMode="contain" />
+                  <Text style={styles.historyText}>
+                    {item.time} | {item.text}
+                  </Text>
+                </View>
+              ))
             )}
           </View>
-        )}
-        ListHeaderComponent={() => (
-          <View style={styles.identityCard}>
-            <View style={styles.avatarCircle}>
-              <Text style={styles.avatarInitial}>{MOCK_USER.name[0]}</Text>
-            </View>
-            <View style={styles.identityInfo}>
-              <Text style={styles.identityName}>{MOCK_USER.name}</Text>
-              <Text style={styles.identityMeta}>{MOCK_USER.email}</Text>
-              <Text style={styles.identityMeta}>ID: {MOCK_USER.id}</Text>
-            </View>
+
+          {/* Menu - More */}
+          <Text style={styles.sectionTitle}>MORE</Text>
+          <View style={styles.menuCard}>
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
+              <Text style={styles.menuIcon}>❓</Text>
+              <Text style={styles.menuText}>HELP & SUPPORT</Text>
+              <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
+              <Image source={require('../assets/pixel_icon_scroll_1778609230685.png')} style={styles.menuIconImg} resizeMode="contain" />
+              <Text style={styles.menuText}>TERMS OF SERVICE</Text>
+              <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.menuItem, styles.menuItemLast]}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.menuIcon}>ℹ️</Text>
+              <Text style={styles.menuText}>ABOUT SUGO</Text>
+              <Image source={require('../assets/pixel_icon_arrow_right_1778609246785.png')} style={styles.menuArrowImg} resizeMode="contain" />
+            </TouchableOpacity>
           </View>
-        )}
-        ListFooterComponent={() => (
+
+          {/* Logout */}
           <TouchableOpacity
             style={styles.logoutButton}
             onPress={() => navigation.navigate('Landing')}
+            activeOpacity={0.7}
           >
-            <Text style={styles.logoutText}>Log Out</Text>
+            <Text style={styles.logoutText}>LOG OUT</Text>
           </TouchableOpacity>
-        )}
-        contentContainerStyle={styles.listContent}
-        stickySectionHeadersEnabled={false}
-      />
-    </AppShell>
+        </ScrollView>
+
+        <PixelBottomNav active="ACCOUNT" />
+      </SafeAreaView>
+    </View>
   );
 };

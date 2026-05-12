@@ -1,201 +1,142 @@
-import React from "react";
-import { View, Text, ScrollView } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { PixelButton } from "../components/PixelButton";
-import { RootStackParamList } from "../navigation/AppNavigator";
+import React, { useState } from 'react';
 import {
-  PaymentStatus,
-  Quest,
-  useQuestStore,
-  VerificationStatus,
-} from "../data/questStore";
-import { AppShell } from "../components/AppShell";
-import { styles } from "./CurrentQuestScreen.styles";
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+  Alert,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppNavigator';
+import { PixelBottomNav, SearchProfileHeader } from '../components/PixelBottomNav';
+import { useSugo } from '../context/SugoContext';
+import { styles } from './CurrentQuestScreen.styles';
 
-type Props = NativeStackScreenProps<RootStackParamList, "CurrentQuest">;
+type Props = NativeStackScreenProps<RootStackParamList, 'CurrentQuest'>;
 
-const verificationLabel: Record<VerificationStatus, string> = {
-  not_started: "Not started",
-  pending: "Pending",
-  verified: "Verified",
-};
+export const CurrentQuestScreen: React.FC<Props> = ({ navigation }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const { activeQuest, completeQuest } = useSugo();
 
-const paymentLabel: Record<PaymentStatus, string> = {
-  not_started: "Not started",
-  pending: "Pending",
-  paid: "Paid",
-};
-
-export const CurrentQuestScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { quests, claimQuest, markDone, confirmResolved } = useQuestStore();
-  const [loadingAction, setLoadingAction] = React.useState<string | null>(null);
-
-  const handleAction = async (
-    actionId: string,
-    actionFn: () => Promise<void>,
-  ) => {
-    try {
-      setLoadingAction(actionId);
-      await actionFn();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoadingAction(null);
-    }
+  const handleComplete = () => {
+    Alert.alert(
+      'COMPLETE QUEST',
+      'Are you sure you want to mark this quest as complete?',
+      [
+        { text: 'CANCEL', style: 'cancel' },
+        {
+          text: 'COMPLETE',
+          onPress: () => {
+            completeQuest();
+          },
+        },
+      ],
+    );
   };
-  const quest = React.useMemo(
-    () => quests.find((item: Quest) => item.id === route.params.questId),
-    [quests, route.params.questId],
-  );
 
-  const hasActiveQuest = React.useMemo(
-    () => quests.some((q) => q.status === "in_progress"),
-    [quests],
-  );
-
-  const progressSteps = React.useMemo(
-    () => [
-      { id: "posted", label: "Request posted", done: true },
-      { id: "claimed", label: "Quest claimed", done: quest?.status !== "open" },
-      {
-        id: "in_progress",
-        label: "Task in progress",
-        done: quest?.status !== "open",
-      },
-      {
-        id: "fulfiller_done",
-        label: "Fulfiller marked done",
-        done: quest?.fulfillerDone,
-      },
-      {
-        id: "requester_confirmed",
-        label: "Requester confirmed",
-        done: quest?.requesterConfirmed,
-      },
-    ],
-    [quest],
-  );
-
-  if (!quest) {
+  // Active quest view
+  if (activeQuest) {
     return (
-      <AppShell
-        navigation={navigation}
-        active="Home"
-        hideOverlay
-        onBack={() => navigation.goBack()}
-      >
-        <View style={styles.notFoundWrapper}>
-          <View style={styles.notFoundCard}>
-            <Text style={styles.title}>Quest not found</Text>
-            <Text style={styles.bodyText}>
-              Head back to the feed and pick another quest.
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+        <SafeAreaView style={styles.safeArea}>
+          <SearchProfileHeader
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
+
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Quest Info Header */}
+            <View style={styles.questInfoHeaderContainer}>
+              <Image source={require('../assets/pixel_icon_exclamation_1778609201873.png')} style={styles.questIconImg} resizeMode="contain" />
+              <Text style={styles.questInfoHeader}>QUEST INFO</Text>
+            </View>
+
+            {/* Map */}
+            <View style={styles.mapContainer}>
+              <Image
+                source={require('../assets/pixel_map.png')}
+                style={styles.mapImage}
+                resizeMode="cover"
+              />
+              <TouchableOpacity style={styles.mapExpandButton} activeOpacity={0.7}>
+                <Text style={styles.mapExpandIcon}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Requester */}
+            <Text style={styles.sectionLabel}>REQUESTER</Text>
+            <View style={styles.requesterRow}>
+              <Image
+                source={require('../assets/pixel_avatar.png')}
+                style={styles.requesterAvatar}
+                resizeMode="cover"
+              />
+              <Text style={styles.requesterName}>{activeQuest.requester}</Text>
+            </View>
+
+            {/* Request Details */}
+            <Text style={styles.sectionLabel}>REQUESTED</Text>
+            <Text style={styles.detailValue}>"{activeQuest.request}"</Text>
+
+            <Text style={styles.sectionLabel}>LOCATION</Text>
+            <Text style={styles.detailValue}>
+              {activeQuest.location} ({activeQuest.distance})
             </Text>
-          </View>
-        </View>
-      </AppShell>
+
+            <Text style={styles.sectionLabel}>PAYMENT</Text>
+            <Text style={styles.detailValue}>PHP {activeQuest.payment}</Text>
+
+            {/* Complete Button */}
+            <View style={styles.bottomSection}>
+              <TouchableOpacity
+                style={styles.completeButton}
+                onPress={handleComplete}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.completeButtonText}>MARK COMPLETE</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+
+          <PixelBottomNav active="CURRENT" />
+        </SafeAreaView>
+      </View>
     );
   }
 
+  // Empty state - no active quest
   return (
-    <AppShell
-      navigation={navigation}
-      active="Home"
-      hideOverlay
-      onBack={() => navigation.goBack()}
-    >
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>{quest.title}</Text>
-        <Text style={styles.subTitle}>
-          PHP {quest.rewardPhp} - {quest.location}
-        </Text>
-        <Text style={styles.bodyText}>{quest.description}</Text>
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+      <SafeAreaView style={styles.safeArea}>
+        <SearchProfileHeader
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Status</Text>
-          <Text style={styles.metaText}>
-            Quest: {quest.status.replace("_", " ")}
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>
+            YOU HAVE NO{'\n'}ONGOING QUEST{'\n'}RIGHT NOW!
           </Text>
-          <Text style={styles.metaText}>
-            Verification: {verificationLabel[quest.verificationStatus]}
-          </Text>
-          <Text style={styles.metaText}>
-            Payment: {paymentLabel[quest.paymentStatus]}
-          </Text>
+
+          <TouchableOpacity
+            style={styles.findButton}
+            onPress={() => navigation.navigate('Nearby')}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.findButtonText}>FIND</Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Completion</Text>
-          <Text style={styles.metaText}>
-            Fulfiller done: {quest.fulfillerDone ? "Yes" : "No"}
-          </Text>
-          <Text style={styles.metaText}>
-            Requester confirmed: {quest.requesterConfirmed ? "Yes" : "No"}
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Progress Steps (Mock)</Text>
-          {progressSteps.map((step, index) => (
-            <View key={step.id} style={styles.stepRow}>
-              <View
-                style={[
-                  styles.stepDot,
-                  step.done ? styles.stepDotDone : styles.stepDotPending,
-                ]}
-              />
-              <Text style={styles.stepText}>
-                {index + 1}. {step.label}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.actions}>
-          {quest.status === "open" &&
-            (hasActiveQuest ? (
-              <View style={styles.claimLockedNotice}>
-                <Text style={styles.claimLockedText}>
-                  You already have an active quest. Resolve it before claiming
-                  another.
-                </Text>
-              </View>
-            ) : (
-              <PixelButton
-                title="Claim Quest"
-                loading={loadingAction === "claim"}
-                onPress={() =>
-                  handleAction("claim", () => claimQuest(quest.id))
-                }
-              />
-            ))}
-
-          {quest.status === "in_progress" && !quest.fulfillerDone && (
-            <PixelButton
-              title="Mark Done"
-              loading={loadingAction === "markDone"}
-              onPress={() => handleAction("markDone", () => markDone(quest.id))}
-            />
-          )}
-
-          {quest.status === "in_progress" &&
-            quest.fulfillerDone &&
-            !quest.requesterConfirmed && (
-              <PixelButton
-                title="Confirm Resolved"
-                loading={loadingAction === "confirm"}
-                onPress={() =>
-                  handleAction("confirm", () => confirmResolved(quest.id))
-                }
-              />
-            )}
-
-          {quest.status === "resolved" && (
-            <View style={styles.resolvedBadge}>
-              <Text style={styles.resolvedText}>Quest resolved</Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
-    </AppShell>
+        <PixelBottomNav active="CURRENT" />
+      </SafeAreaView>
+    </View>
   );
 };

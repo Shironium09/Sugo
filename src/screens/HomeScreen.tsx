@@ -1,79 +1,99 @@
-import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+  Image,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { FilterState, Quest, useQuestStore } from '../data/questStore';
-import { AppShell } from '../components/AppShell';
-import { FilterChips } from '../components/FilterChips';
-import { QuestCard } from '../components/QuestCard';
+import { PixelBottomNav, SearchProfileHeader } from '../components/PixelBottomNav';
+import { useSugo } from '../context/SugoContext';
 import { styles } from './HomeScreen.styles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export const HomeScreen: React.FC<Props> = ({ navigation }) => {
-  const { filterQuests } = useQuestStore();
-  const [filters, setFilters] = React.useState<FilterState>({ sort: 'recency', tags: [] });
-  const [sortedQuests, setSortedQuests] = React.useState<Quest[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showAll, setShowAll] = useState(false);
+  const { history } = useSugo();
 
-  React.useEffect(() => {
-    let mounted = true;
-    setLoading(true);
-    filterQuests(filters).then(data => {
-      if (mounted) {
-        setSortedQuests(data);
-        setLoading(false);
-      }
-    });
-    return () => {
-      mounted = false;
-    };
-  }, [filters, filterQuests]);
-
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <Text style={styles.title}>Available Quests</Text>
-      <FilterChips filters={filters} onChange={setFilters} />
-    </View>
-  );
-
-  const renderEmpty = () => (
-    <View style={styles.emptyState}>
-      <Text style={styles.emptyTitle}>No quests yet</Text>
-      <Text style={styles.emptyBody}>Create the first quest to start the feed.</Text>
-    </View>
-  );
-
-  const renderItem = React.useCallback(
-    ({ item }: { item: Quest }) => (
-      <QuestCard
-        quest={item}
-        onPress={() => navigation.navigate('CurrentQuest', { questId: item.id })}
-      />
-    ),
-    [navigation]
-  );
+  const displayedHistory = showAll ? history : history.slice(0, 5);
 
   return (
-    <AppShell navigation={navigation} active="Home">
-      <View style={styles.content}>
-        <View style={styles.mapPanel}>
-          <View style={styles.mapSurface}>
-            <Text style={styles.mapLabel}>Minimal Campus Map (Mock)</Text>
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+      <SafeAreaView style={styles.safeArea}>
+        <SearchProfileHeader
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Action Buttons */}
+          <View style={styles.actionContainer}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate('CreateQuest')}
+            >
+              <Image source={require('../assets/pixel_icon_book_1778609189899.png')} style={styles.actionIconImg} resizeMode="contain" />
+              <Text style={styles.actionText}>BOOK</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionButton}
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate('Nearby')}
+            >
+              <Image source={require('../assets/pixel_icon_exclamation_1778609201873.png')} style={styles.actionIconImg} resizeMode="contain" />
+              <Text style={styles.actionText}>QUEST</Text>
+            </TouchableOpacity>
           </View>
-        </View>
-        <View style={styles.listPanel}>
-          <FlatList<Quest>
-            data={sortedQuests}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            ListHeaderComponent={renderHeader}
-            ListEmptyComponent={renderEmpty}
-            contentContainerStyle={styles.listContent}
-            stickyHeaderIndices={[0]}
-          />
-        </View>
-      </View>
-    </AppShell>
+
+          {/* History Section */}
+          <View style={styles.historyContainer}>
+            <Text style={styles.historyTitle}>HISTORY</Text>
+            {displayedHistory.length === 0 ? (
+              <Text style={styles.emptyHistory}>NO HISTORY YET</Text>
+            ) : (
+              displayedHistory.map((item, index) => (
+                <View
+                  key={item.id}
+                  style={[
+                    styles.historyItem,
+                    index === displayedHistory.length - 1 && styles.historyItemLast,
+                  ]}
+                >
+                  <Image source={require('../assets/pixel_icon_timer_1778609217507.png')} style={styles.historyIconImg} resizeMode="contain" />
+                  <Text style={styles.historyText}>
+                    {item.time} | {item.text}
+                  </Text>
+                </View>
+              ))
+            )}
+            {history.length > 5 && (
+              <TouchableOpacity
+                style={styles.seeMoreButton}
+                activeOpacity={0.7}
+                onPress={() => setShowAll(!showAll)}
+              >
+                <Text style={styles.seeMoreText}>
+                  {showAll ? 'SHOW LESS' : 'SEE MORE'}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </ScrollView>
+
+        <PixelBottomNav active="HOME" />
+      </SafeAreaView>
+    </View>
   );
 };

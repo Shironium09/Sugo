@@ -12,35 +12,41 @@ export const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 16,
   },
-  // Action buttons
-  actionContainer: {
-    paddingHorizontal: 20,
+  // Map section
+  mapContainer: {
+    marginHorizontal: 20,
     marginBottom: 16,
-    gap: 10,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     borderWidth: 2,
     borderColor: colors.ink,
     borderRadius: 16,
-    backgroundColor: colors.surface,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    gap: 12,
+    overflow: 'hidden',
+    height: 220,
+    position: 'relative',
   },
-  actionIconImg: {
+  mapImage: {
+    width: '100%',
+    height: '100%',
+  },
+  mapExpandButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
     width: 28,
     height: 28,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  actionText: {
+  mapExpandIcon: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 22,
+    fontSize: 14,
     color: colors.ink,
   },
-  // History section
-  historyContainer: {
+  // Nearby list
+  nearbyContainer: {
     marginHorizontal: 20,
     borderWidth: 2,
     borderColor: colors.ink,
@@ -51,30 +57,30 @@ export const styles = StyleSheet.create({
     paddingBottom: 12,
     marginBottom: 8,
   },
-  historyTitle: {
+  nearbyTitle: {
     fontFamily: 'PixelifySans-Regular',
     fontSize: 22,
     color: colors.ink,
     textAlign: 'center',
     marginBottom: 12,
   },
-  historyItem: {
+  nearbyItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#EEE',
   },
-  historyItemLast: {
+  nearbyItemLast: {
     borderBottomWidth: 0,
   },
-  historyIconImg: {
+  nearbyIconImg: {
     width: 20,
     height: 20,
     marginRight: 10,
     marginTop: 2,
   },
-  historyText: {
+  nearbyText: {
     fontFamily: 'PixelifySans-Regular',
     fontSize: 13,
     color: colors.ink,
@@ -91,7 +97,7 @@ export const styles = StyleSheet.create({
     color: colors.ink,
     textDecorationLine: 'underline',
   },
-  emptyHistory: {
+  emptyText: {
     fontFamily: 'PixelifySans-Regular',
     fontSize: 14,
     color: colors.inkMuted,

@@ -2,126 +2,191 @@ import { StyleSheet } from 'react-native';
 import { colors } from '../theme/colors';
 
 export const styles = StyleSheet.create({
-  listContent: {
-    padding: 20,
-    paddingBottom: 40,
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
-  identityCard: {
-    flexDirection: 'row',
+  safeArea: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+  },
+  // Profile card
+  profileCard: {
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.ink,
-    borderRadius: 16,
-    padding: 16,
-    backgroundColor: colors.surface,
-    marginBottom: 24,
-    gap: 14,
+    paddingVertical: 24,
+    marginBottom: 16,
   },
-  avatarCircle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    borderWidth: 2,
+  avatarContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
     borderColor: colors.ink,
-    backgroundColor: colors.surfaceBlue,
-    alignItems: 'center',
-    justifyContent: 'center',
+    overflow: 'hidden',
+    marginBottom: 12,
+    backgroundColor: '#7BC8E8',
   },
-  avatarInitial: {
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  profileName: {
     fontFamily: 'PixelifySans-Regular',
     fontSize: 24,
     color: colors.ink,
+    marginBottom: 4,
   },
-  identityInfo: {
+  profileEmail: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 13,
+    color: colors.inkMuted,
+    marginBottom: 2,
+  },
+  profileId: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 12,
+    color: colors.inkSubtle,
+  },
+  // Stats row
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+    paddingVertical: 16,
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 16,
+    backgroundColor: colors.surface,
+  },
+  statItem: {
+    alignItems: 'center',
     flex: 1,
   },
-  identityName: {
+  statValue: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 16,
+    fontSize: 22,
     color: colors.ink,
     marginBottom: 4,
   },
-  identityMeta: {
-    fontFamily: 'IBMPlexMono-Regular',
+  statLabel: {
+    fontFamily: 'PixelifySans-Regular',
     fontSize: 11,
     color: colors.inkMuted,
-    lineHeight: 17,
   },
-  section: {
-    marginBottom: 24,
+  statDivider: {
+    width: 2,
+    backgroundColor: colors.ink,
+    marginVertical: 4,
   },
+  // Menu section
   sectionTitle: {
     fontFamily: 'PixelifySans-Regular',
     fontSize: 14,
-    color: colors.ink,
-    marginBottom: 10,
-    backgroundColor: colors.surfaceSubtle,
-    paddingVertical: 4,
+    color: colors.inkMuted,
+    marginBottom: 8,
+    marginTop: 8,
+    letterSpacing: 1,
   },
-  card: {
+  menuCard: {
     borderWidth: 2,
     borderColor: colors.ink,
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
+    borderRadius: 16,
     backgroundColor: colors.surface,
+    overflow: 'hidden',
+    marginBottom: 16,
   },
-  cardHeader: {
+  menuItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
   },
-  cardTitle: {
+  menuItemLast: {
+    borderBottomWidth: 0,
+  },
+  menuIcon: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 13,
+    fontSize: 20,
+    marginRight: 12,
+  },
+  menuIconImg: {
+    width: 20,
+    height: 20,
+    marginRight: 12,
+  },
+  menuText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 15,
     color: colors.ink,
     flex: 1,
-    marginRight: 8,
   },
-  statusPill: {
-    borderWidth: 2,
-    borderColor: colors.ink,
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  statusText: {
+  menuArrow: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 9,
-    color: colors.ink,
-  },
-  metaText: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 12,
-    color: colors.inkMuted,
-  },
-  emptyState: {
-    borderWidth: 2,
-    borderColor: colors.borderSubtle,
-    borderRadius: 12,
-    padding: 16,
-    backgroundColor: colors.surfaceSubtle,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  emptyText: {
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 13,
+    fontSize: 16,
     color: colors.inkSubtle,
   },
+  menuArrowImg: {
+    width: 14,
+    height: 14,
+    tintColor: colors.inkSubtle,
+  },
+  // Logout
   logoutButton: {
     borderWidth: 2,
-    borderColor: colors.ink,
-    borderRadius: 12,
-    padding: 14,
+    borderColor: '#FF6B6B',
+    borderRadius: 16,
+    paddingVertical: 14,
     alignItems: 'center',
-    backgroundColor: colors.warning,
+    backgroundColor: 'transparent',
     marginTop: 8,
   },
   logoutText: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 13,
+    fontSize: 16,
+    color: '#FF6B6B',
+  },
+  // History section
+  historyTitle: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 16,
     color: colors.ink,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  historyItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
+  },
+  historyItemLast: {
+    borderBottomWidth: 0,
+  },
+  historyIconImg: {
+    width: 16,
+    height: 16,
+    marginRight: 8,
+    marginTop: 2,
+  },
+  historyText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 12,
+    color: colors.ink,
+    flex: 1,
+    lineHeight: 18,
+  },
+  emptyText: {
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 13,
+    color: colors.inkSubtle,
+    textAlign: 'center',
+    paddingVertical: 16,
   },
 });

@@ -2,74 +2,98 @@ import { StyleSheet } from 'react-native';
 import { colors } from '../theme/colors';
 
 export const styles = StyleSheet.create({
-  content: {
-    padding: 20,
-    paddingBottom: 32,
+  container: {
+    flex: 1,
+    backgroundColor: '#7BC8E8',
   },
-  backButton: {
-    alignSelf: 'flex-start',
+  safeArea: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 32,
+    justifyContent: 'space-between',
+  },
+  topSection: {
+    flex: 1,
+    paddingTop: 24,
+  },
+  // Icon at top
+  iconContainer: {
+    alignItems: 'center',
     marginBottom: 16,
-    minWidth: 0,
-    paddingHorizontal: 16,
+  },
+  questIconImg: {
+    width: 48,
+    height: 48,
   },
   title: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 30,
     color: colors.ink,
+    textAlign: 'center',
+    marginBottom: 24,
   },
-  fieldGroup: {
+  fieldContainer: {
     marginBottom: 16,
   },
-  label: {
+  fieldLabel: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 14,
-    marginBottom: 8,
+    fontSize: 13,
     color: colors.ink,
+    marginBottom: 6,
+    letterSpacing: 1,
   },
-  input: {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 2,
     borderColor: colors.ink,
     borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontFamily: 'IBMPlexMono-Regular',
-    fontSize: 16,
-    color: colors.ink,
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 16,
+    height: 48,
   },
-  textArea: {
-    minHeight: 90,
-    textAlignVertical: 'top',
+  input: {
+    flex: 1,
+    fontFamily: 'PixelifySans-Regular',
+    fontSize: 14,
+    color: colors.ink,
+    paddingVertical: 0,
+  },
+  locationPinImg: {
+    width: 24,
+    height: 24,
+    marginLeft: 8,
   },
   errorText: {
-    fontFamily: 'IBMPlexMono-Regular',
-    color: colors.error,
-    marginBottom: 12,
-    fontSize: 14,
-  },
-  lockedContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  viewQuestButton: {
-    marginTop: 24,
-    alignSelf: 'stretch',
-  },
-  lockedTitle: {
     fontFamily: 'PixelifySans-Regular',
-    fontSize: 24,
-    color: colors.ink,
-    marginBottom: 12,
+    fontSize: 12,
+    color: '#FF4444',
     textAlign: 'center',
+    marginTop: 8,
   },
-  lockedText: {
-    fontFamily: 'IBMPlexMono-Regular',
+  bottomSection: {
+    alignItems: 'center',
+    paddingBottom: 16,
+    paddingTop: 16,
+  },
+  confirmButton: {
+    borderWidth: 2,
+    borderColor: colors.ink,
+    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 48,
+    backgroundColor: 'transparent',
+  },
+  confirmButtonText: {
+    fontFamily: 'PixelifySans-Regular',
     fontSize: 16,
-    color: colors.inkMuted,
+    color: colors.ink,
     textAlign: 'center',
-    lineHeight: 24,
   },
 });

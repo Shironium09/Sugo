@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { QuestProvider } from './src/data/questStore';
 import { AuthProvider } from './src/data/AuthContext';
+import { SugoProvider } from './src/context/SugoContext';
 import { useFonts, PixelifySans_400Regular } from '@expo-google-fonts/pixelify-sans';
 import { IBMPlexMono_400Regular } from '@expo-google-fonts/ibm-plex-mono';
 import { VT323_400Regular } from '@expo-google-fonts/vt323';
@@ -28,11 +29,13 @@ export default function App() {
   return (
     <AuthProvider>
       <QuestProvider>
-        <SafeAreaProvider>
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
-        </SafeAreaProvider>
+        <SugoProvider>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </SugoProvider>
       </QuestProvider>
     </AuthProvider>
   );
